@@ -1,0 +1,91 @@
+<!--
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+    <string name="app_name">Book Store</string>
+    <string name="attention">Attention</string>
+    <string name="back_button">Back</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="delete_question">Are you sure you want to delete?</string>
+    <string name="no_item_description">Oops!\nNo items in the inventory.\nTap + to add.</string>
+    <string name="edit_item_title">Edit Item</string>
+    <string name="item">Item</string>
+    <string name="item_detail_title">Item Details</string>
+    <string name="item_entry_title">Add Item</string>
+    <string name="item_name_req">Item Name*</string>
+    <string name="item_price_req">Item Price*</string>
+
+    <string name="book_edit_title">Book Edit</string>
+    <string name="book_detail_title">Book Details</string>
+    <string name="book_entry_title">Book Item</string>
+    <string name="book_entry_button">Book Entry</string>
+    <string name="book_id">Book ID</string>
+    <string name="book_name_req">Book Name*</string>
+    <string name="book_type_req">Book Type*</string>
+    <string name="book_add_title">Add Book</string>
+    <string name="author_id">Author ID</string>
+    <string name="author_name_rq">Author Name*</string>
+    <string name="add_new_author">Add New Author</string>
+    <string name="publication_info_req">Publication Info*</string>
+    <string name="shelf_number_req">Shelf Number*</string>
+    <string name="subject_req">Subject*</string>
+    <string name="physical_description_req">Physical Description*</string>
+    <string name="save_to_library">Save to Library</string>
+    <string name="remove_from_library">Remove from Library</string>
+
+    <string name="vn_book_name_req">Tên sách: </string>
+    <string name="vn_author_name_req">Tên tác giả: </string>
+    <string name="vn_publication_info_req">Thông tin xuất bản: </string>
+    <string name="vn_shelf_number_req">Stt trên kệ sách: </string>
+    <string name="vn_subject_req">Chủ đề: </string>
+    <string name="vn_physical_description_req">Mô tả vật lý: </string>
+    <string name="vn_book_type_req">Loại sách: </string>
+
+
+    <string name="Library">Library</string>
+    <string name="Settings">Settings</string>
+
+
+    <string name="no">No</string>
+    <string name="price">Price</string>
+    <string name="quantity_in_stock">Quantity in stock</string>
+    <string name="in_stock">%d in stock</string>
+    <string name="quantity_req">Quantity in Stock*</string>
+    <string name="save_action">Save</string>
+    <string name="sell">Sell</string>
+    <string name="yes">Yes</string>
+    <string name="required_fields">*required fields</string>
+    <string name="search">Search</string>
+    <string name="home_button">Home</string>
+    <string name="info_button">Info</string>
+
+
+    <string name="App_infomations">Thông tin chung</string>
+    <string name="Mentor">Giảng viên hướng dẫn: Th.s Châu Xuân Phương</string>
+    <string name="Course_Name">Học phần: Niên luận cơ sở ngành (CT239)</string>
+    <string name="Developer">Sinh viên thực hiện: Nguyễn Hữu Đức</string>
+    <string name="StudentId">MSSV: S2200001</string>
+    <string name="App_version">Version: 1.0.0</string>
+    <string name="Data_source">Nguồn dữ liệu: https://lrc.ctu.edu.vn/</string>
+
+    <string name="Admin_areas">Khu vực quản trị viên</string>
+    <string name="Update_Delete_Book">Sửa và xóa sách</string>
+    <string name="Add_new_Book">Thêm sách mới</string>
+
+    <string name="More">Xem thêm</string>
+    <string name="Subject">Subject</string>
+
+</resources>
