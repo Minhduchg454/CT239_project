@@ -40,6 +40,9 @@ class OfflineBookRepository (private val booksDao: BooksDao) : BooksRepository {
     override suspend fun updateBook(book: Book) = booksDao.update(book)
     override fun searchBooksByName(name: String): Flow<List<Book>> = booksDao.searchBooksByName(name)
     override fun searchBooksBySubject(subject: String): Flow<List<Book>> = booksDao.searchBooksBySubject(subject)
+    override fun searchBooksByAuthor(authorId: Int): Flow<List<Book>> = booksDao.searchBooksByAuthor(authorId)
+    override fun searchBooksByType(type: String): Flow<List<Book>> = booksDao.searchBooksByType(type)
+
     override suspend fun updateSaveToLibrary(bookId: Int, saveToLibrary: Boolean) = booksDao.updateSaveToLibrary(bookId, saveToLibrary)
     override fun getBookSavedState(bookId: Int): Flow<Boolean> = booksDao.getBookSavedState(bookId)
     override fun getAllSaveBooks(): Flow<List<Book>> = booksDao.getAllSaveBooks()
@@ -53,6 +56,8 @@ class OfflineAuthorRepository (private val authorsDao: AuthorDao): AuthorsReposi
     override suspend fun deleteAuthor(author: Author) = authorsDao.delete(author)
     override suspend fun updateAuthor(author: Author) = authorsDao.update(author)
     override fun searchAuthorsByName(name: String): Flow<List<Author>> = authorsDao.searchAuthorByName(name)
+    override fun getIdByName(name: String): Flow<Int> = authorsDao.getIdByName(name)
+
 }
 
 /*

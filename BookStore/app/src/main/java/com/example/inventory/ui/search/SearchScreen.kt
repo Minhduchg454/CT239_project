@@ -13,11 +13,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,6 +39,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -42,6 +50,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -57,6 +66,7 @@ import com.example.inventory.ui.home.HomeViewModel
 import com.example.inventory.ui.home.groupBooksBySubject
 import com.example.inventory.ui.navigation.NavigationDestination
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlin.reflect.full.memberProperties
 
 
 object SearchScreenDestination : NavigationDestination {
@@ -78,6 +88,12 @@ fun SearchScreen(
     val searchQuery by viewModel.searchQuery.collectAsState()
     val authorUiState by viewModel.AuthorsUiState.collectAsState()
 
+    val typeSearchQuery by viewModel.typeSearchQuery.collectAsState()
+
+
+    //Hien thi kieu chon
+    val isTypeSearchVision = searchQuery.isEmpty() //khi nao by khi nao =
+
     //Thiet lap cuon cho top bar
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
@@ -92,19 +108,29 @@ fun SearchScreen(
                 )
                 SearchBarHome(
                     searchQuery = searchQuery,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    typeSearch = typeSearchQuery
                 )
             }
         },
     ) { innerPadding ->
-            HomeBookBodyLazyColumn(
-                bookList = searchUiState.bookList,
-                authorList = authorUiState.authorList,
-                onItemClick = navigateToItemUpdate,
-                modifier = modifier
-                    .fillMaxSize(),
-                contentPadding = innerPadding,
-            )
+            if (isTypeSearchVision){
+                TypeSearch(
+                    onTypeClick = {
+                        viewModel.updateTypeSearchQuery(it)
+                    },
+                    modifier = modifier.padding(innerPadding)
+                )
+            }else{
+                HomeBookBodyLazyColumn(
+                    bookList = searchUiState.bookList,
+                    authorList = authorUiState.authorList,
+                    onItemClick = navigateToItemUpdate,
+                    modifier = modifier
+                        .fillMaxSize(),
+                    contentPadding = innerPadding,
+                )
+            }
     }
 }
 
@@ -115,16 +141,20 @@ fun SearchScreen(
 @Composable
 fun SearchBarHome(
     searchQuery: String,
+    typeSearch: String,
     viewModel: HomeViewModel,
     modifier: Modifier = Modifier
 ){
+
+
     OutlinedTextField(
         value = searchQuery,
         onValueChange = {
             viewModel.updateSearchQuery(it)
             viewModel.updateAdminSearchQuery(it)
                         }, // Truyền chuỗi tìm kiếm vào ViewModel
-        label = { Text(text = stringResource(R.string.search)) },
+        label = {
+            Text(text = stringResource(R.string.search) + " by " + typeSearch) },
         modifier = modifier
             .fillMaxWidth()
             .padding(
@@ -147,4 +177,83 @@ fun SearchBarHome(
         textStyle = androidx.compose.ui.text.TextStyle(fontSize = 15.sp),
         colors = customTextFieldColors()
     )
+}
+
+
+@Composable
+fun TypeSearch (
+    onTypeClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+){
+    //val bookProperties = Book::class.memberProperties.map { it.name }
+
+    val bookProperties = listOf(
+        "Name",
+        "Type",
+        "Subject",
+        "Author"
+    )
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+    ){
+        Text(
+            text = stringResource(R.string.Type),
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            ),
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
+        )
+        LazyRow (
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+           items(bookProperties) { type ->
+                ItemCard(
+                    modifier = Modifier,
+                    type = type,
+                    onClick = { onTypeClick(it) },
+                    diameter = 90.dp
+                )
+            }
+        }
+
+    }
+
+}
+
+@Composable
+fun ItemCard (
+    modifier: Modifier = Modifier,
+    type: String,
+    onClick: (String) -> Unit,
+    diameter: Dp
+){
+    Card (
+        modifier = modifier
+            .padding(dimensionResource(id = R.dimen.padding_small))
+            .clickable { onClick(type) },
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = CircleShape, // Hinh dạng tròn
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    ){
+        Box(
+            contentAlignment = Alignment.Center, // Căn giữa văn bản trong Card
+            modifier = Modifier
+                .size(diameter)
+        ) {
+            Text(
+                text = type,
+                //color = MaterialTheme.colorScheme.onPrimaryContainer, // Màu chữ
+                fontSize = 14.sp, // Kích thước chữ
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+            )
+        }
+    }
 }

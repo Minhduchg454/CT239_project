@@ -81,6 +81,7 @@ import com.example.inventory.ui.home.HomeDestination
 import com.example.inventory.ui.home.ListSubjectScreen
 import com.example.inventory.ui.library.LibraryDestination
 import com.example.inventory.ui.navigation.NavigationDestination
+import com.example.inventory.ui.search.SearchScreenDestination
 import com.example.inventory.ui.theme.InventoryTheme
 import kotlinx.coroutines.launch
 
@@ -228,7 +229,8 @@ private fun BookDetailsBody(
 
         if(
             previousRoute == HomeDestination.route ||
-            previousRoute == ListSubjectScreen.routeWithArgs
+            previousRoute == ListSubjectScreen.routeWithArgs ||
+            previousRoute == SearchScreenDestination.route
             ){
             Button(
                 onClick = {

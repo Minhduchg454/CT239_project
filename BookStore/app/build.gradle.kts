@@ -93,4 +93,8 @@ dependencies {
 
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.24.13-rc")
 
+    //Member properties
+    implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.20-RC2")
+
+
 }

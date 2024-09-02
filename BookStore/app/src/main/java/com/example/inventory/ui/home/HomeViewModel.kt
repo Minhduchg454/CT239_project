@@ -86,15 +86,33 @@ class HomeViewModel (
     private val _searchQuery = MutableStateFlow("") //Bien nhan gia tri khi co thay doi
     val searchQuery: StateFlow<String> =_searchQuery //Bien truyen toi cac thanh phan ui va chi cho phep doc khong thay doi gia tri
 
+    private val _typeSearchQuery = MutableStateFlow("Name")
+    val typeSearchQuery: StateFlow<String> = _typeSearchQuery
+
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     val searchUiState: StateFlow<BooksUiState> = searchQuery
         .flatMapLatest { query -> // Phản ứng với sự thay đổi của chuỗi tìm kiếm
             if (query.isEmpty()) {
                 flowOf(BooksUiState(emptyList())) // Khi chuỗi tìm kiếm trống, phát ra một HomeUiState với danh sách rỗng
             } else {
-                booksRepository.searchBooksByName(query) // Nếu có chuỗi tìm kiếm, tìm kiếm theo tên
-                    .map { booksList -> BooksUiState(booksList) } // Chuyển đổi kết quả thành HomeUiState
+                when (typeSearchQuery.value) {
+                    "Name" -> booksRepository.searchBooksByName(query)
+                    "Type" -> booksRepository.searchBooksByType(query)
+                    "Subject" -> booksRepository.searchBooksBySubject(query)
+                    "Author" -> {
+                                authorsRepository.getIdByName(query)
+                                    .flatMapLatest { authorId ->
+                                            booksRepository.searchBooksByAuthor(authorId)
+                                    }
+                                }
+                    else -> booksRepository.searchBooksByName(query)
+                }
+                    .map { booksList -> BooksUiState(booksList) }
+                     // Chuyển đổi kết quả thành HomeUiState
             }
         }
+
         .stateIn( // Chuyển đổi từ Flow thành StateFlow
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
@@ -102,6 +120,9 @@ class HomeViewModel (
         )
     fun updateSearchQuery(newQuery: String) {
         _searchQuery.value = newQuery // Cập nhật chuỗi tìm kiếm
+    }
+    fun updateTypeSearchQuery(newQuery: String) {
+        _typeSearchQuery.value = newQuery // Cập nhật chuỗi tìm kiếm
     }
 
 
@@ -130,12 +151,6 @@ class HomeViewModel (
     fun updateAdminSearchQuery(newQuery: String) {
         _adminsSearchQuery.value = newQuery // Cập nhật chuỗi tìm kiếm
     }
-
-
-
-
-
-
 
 
 

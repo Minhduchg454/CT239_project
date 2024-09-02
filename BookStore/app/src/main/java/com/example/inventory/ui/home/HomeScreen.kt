@@ -148,6 +148,7 @@ fun HomeBookBodyLazyrow(
     ) {
         booksBySubject.forEach { (subject, books) ->
             item {
+
                 Row (
                   modifier =
                   Modifier
@@ -189,7 +190,7 @@ fun HomeBookBodyLazyrow(
                             author = author,
                             modifier = Modifier
                                 .width(200.dp) // Thiết lập chiều rộng cụ thể
-                                .height(170.dp) // Thiết lập chiều cao cụ thể
+                                .height(150.dp) // Thiết lập chiều cao cụ thể
                                 .padding(dimensionResource(id = R.dimen.padding_small))
                                 .clickable { onItemClick(book.bookId) }
                         )
@@ -199,11 +200,6 @@ fun HomeBookBodyLazyrow(
         }
     }
 }
-
-
-
-
-
 
 
 

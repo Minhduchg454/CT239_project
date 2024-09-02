@@ -69,11 +69,20 @@ interface BooksDao {
     fun getAllSaveBooks(): Flow<List<Book>>
 
 
-    @Query ("SELECT * FROM books WHERE name LIKE '%' || :name || '%' ORDER BY name ASC")
+    @Query ("SELECT * FROM books WHERE LOWER(name) LIKE '%' || LOWER(:name) || '%' ORDER BY name ASC")
     fun searchBooksByName(name: String): Flow<List<Book>>
 
-    @Query ("SELECT * FROM books WHERE subject = :subject ORDER BY name ASC")
+    @Query ("SELECT * FROM books WHERE LOWER(subject) LIKE '%' || LOWER(:subject) || '%' ORDER BY name ASC")
     fun searchBooksBySubject(subject: String): Flow<List<Book>>
+
+    @Query ("SELECT * FROM books WHERE LOWER(type) LIKE '%' || LOWER(:type) || '%' ORDER BY name ASC")
+    fun searchBooksByType(type: String): Flow<List<Book>>
+
+    @Query ("SELECT * FROM books WHERE authorId = :authorId ORDER BY name ASC")
+    fun searchBooksByAuthor(authorId: Int): Flow<List<Book>>
+
+
+
 
     @Query("UPDATE books SET saveToLibrary = :saveToLibrary WHERE bookId = :bookId")
     suspend fun updateSaveToLibrary(bookId: Int, saveToLibrary: Boolean)
@@ -98,9 +107,13 @@ interface AuthorDao{
     @Query("Select * FROM authors WHERE Id = :authorId ORDER BY name ASC")
     fun searchAuthorById (authorId: Int): Flow<Author>
 
-    @Query("SELECT * FROM authors WHERE name LIKE '%' || :name || '%' ORDER BY name ASC")
+    @Query("SELECT * FROM authors WHERE LOWER(name) LIKE '%' || LOWER(:name) || '%' ORDER BY name ASC")
     fun searchAuthorByName(name: String): Flow<List<Author>>
 
     @Query ("SELECT * FROM authors ORDER BY name ASC")
     fun getAllAuthors(): Flow<List<Author>>
+
+    @Query("SELECT id FROM authors WHERE LOWER(name) LIKE '%' || LOWER(:name) || '%'")
+    fun getIdByName(name: String): Flow<Int>
+
 }

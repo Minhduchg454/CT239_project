@@ -58,6 +58,10 @@ interface BooksRepository {
     suspend fun updateBook(book: Book)
     fun searchBooksByName(name: String): Flow<List<Book>>
     fun searchBooksBySubject(subject: String): Flow<List<Book>>
+    fun searchBooksByAuthor(authorId: Int): Flow<List<Book>>
+    fun searchBooksByType(type: String): Flow<List<Book>>
+
+
     suspend fun updateSaveToLibrary(bookId: Int, saveToLibrary: Boolean)
     fun getBookSavedState(bookId: Int): Flow<Boolean>
     fun getAllSaveBooks(): Flow<List<Book>>
@@ -70,4 +74,5 @@ interface AuthorsRepository {
     suspend fun deleteAuthor(author: Author)
     suspend fun updateAuthor(author: Author)
     fun searchAuthorsByName(name: String): Flow<List<Author>>
+    fun getIdByName(name: String): Flow<Int>
 }

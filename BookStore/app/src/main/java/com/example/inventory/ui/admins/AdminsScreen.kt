@@ -96,7 +96,8 @@ fun AdminsScreen(
                 )
                 SearchBarHome(
                     searchQuery = searchQuery,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    typeSearch = "Name"
                 )
             }
         },
