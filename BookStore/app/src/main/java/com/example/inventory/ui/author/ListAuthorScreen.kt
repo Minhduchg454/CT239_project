@@ -53,7 +53,6 @@ object ListAuthorScreenDestination : NavigationDestination {
     override val buttonText = R.string.List_authors
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListAuthorScreen (
