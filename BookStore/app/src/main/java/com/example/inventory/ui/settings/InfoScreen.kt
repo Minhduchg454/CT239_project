@@ -1,54 +1,46 @@
-package com.example.inventory.ui.info
+package com.example.inventory.ui.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Settings
+
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
-import com.example.inventory.data.Author
-import com.example.inventory.data.Book
 import com.example.inventory.ui.navigation.NavigationDestination
-import com.example.inventory.ui.theme.InventoryTheme
+import com.example.inventory.ui.theme.CardColorsCustom
 
 object SettingsDestination : NavigationDestination {
     override val route = "Settings"
     override val titleRes = R.string.Settings
-    override val icon = Icons.Default.Settings
+    override val icon = Icons.Outlined.Settings
+    override val buttonText = R.string.Settings
 }
 
 
@@ -56,8 +48,9 @@ object SettingsDestination : NavigationDestination {
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    onUpdateDeleteClick : () -> Unit,
-    onAddBookClick : () -> Unit
+    onUpdateDeleteBookClick : () -> Unit,
+    onAddBookClick : () -> Unit,
+    onUpdateDeleteAuthorClick: () -> Unit
 ){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
@@ -74,8 +67,9 @@ fun SettingsScreen(
         SettingsBody(
             contentPadding = innerPadding,
             modifier = Modifier.fillMaxSize(),
-            onUpdateDeleteClick = onUpdateDeleteClick,
-            onAddBookClick = onAddBookClick
+            onUpdateDeleteBookClick = onUpdateDeleteBookClick,
+            onAddBookClick = onAddBookClick,
+            onUpdateDeleteAuthorClick = onUpdateDeleteAuthorClick
         )
     }
 }
@@ -84,21 +78,26 @@ fun SettingsScreen(
 fun SettingsBody (
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    onUpdateDeleteClick: () -> Unit,
-    onAddBookClick: () -> Unit
+    onUpdateDeleteBookClick: () -> Unit,
+    onAddBookClick: () -> Unit,
+    onUpdateDeleteAuthorClick: () -> Unit
 ){
     LazyColumn (
         contentPadding = contentPadding,
         modifier = modifier
             .fillMaxSize()
-            .padding(dimensionResource(id = R.dimen.padding_medium))
+            .padding(
+                start = dimensionResource(id = R.dimen.padding_medium),
+                end = dimensionResource(id = R.dimen.padding_medium)
+            )
     ){
         items(1) { // Sử dụng `items`  lặp lại một số lượng card nhất định
             InfoAppCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        bottom = dimensionResource(id = R.dimen.padding_medium)
+                        top = dimensionResource(id = R.dimen.padding_small),
+                        bottom = dimensionResource(id = R.dimen.padding_small)
                     )
             )
         }
@@ -108,10 +107,12 @@ fun SettingsBody (
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        bottom = dimensionResource(id = R.dimen.padding_medium)
+                        top = dimensionResource(id = R.dimen.padding_small),
+                        bottom = dimensionResource(id = R.dimen.padding_small)
                     ),
-                onUpdateDeleteClick = onUpdateDeleteClick,
-                onAddBookClick = onAddBookClick
+                onUpdateDeleteBookClick = onUpdateDeleteBookClick,
+                onAddBookClick = onAddBookClick,
+                onUpdateDeleteAuthorClick = onUpdateDeleteAuthorClick
             )
         }
     }
@@ -128,6 +129,7 @@ fun InfoAppCard(
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), //thiet lap do cao co cad
+        colors =  CardColorsCustom(),
         shape = RoundedCornerShape(16.dp), // Hinh dang
     ) {
         Column(
@@ -145,42 +147,41 @@ fun InfoAppCard(
                 overflow = TextOverflow.Ellipsis
 
             )
-
             Text(
                 text = stringResource(id = R.string.Course_Name),
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-
+            HorizontalDivider()
             Text(
                 text = stringResource(id = R.string.Mentor),
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-
+            HorizontalDivider()
             Text(
                 text = stringResource(id = R.string.Developer),
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-
+            HorizontalDivider()
             Text(
                 text = stringResource(id = R.string.StudentId),
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-
+            HorizontalDivider()
             Text(
                 text = stringResource(id = R.string.App_version),
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-
+            HorizontalDivider()
             Text(
                 text = stringResource(id = R.string.Data_source),
                 style = MaterialTheme.typography.bodyMedium,
@@ -194,13 +195,15 @@ fun InfoAppCard(
 @Composable
 fun AdminArea(
     modifier: Modifier = Modifier,
-    onUpdateDeleteClick: () -> Unit,
-    onAddBookClick: () -> Unit
+    onUpdateDeleteBookClick: () -> Unit,
+    onAddBookClick: () -> Unit,
+    onUpdateDeleteAuthorClick: () -> Unit
 ) {
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), //thiet lap do cao co cad
         shape = RoundedCornerShape(16.dp), // Hinh dang
+        colors = CardColorsCustom()
     ) {
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large)),
@@ -219,9 +222,6 @@ fun AdminArea(
 
             Row (
                 modifier = Modifier
-                    .padding(
-                        bottom = dimensionResource(id = R.dimen.padding_tiny)
-                    )
                     .fillMaxWidth()
                     .clickable { onAddBookClick() }
             ) {
@@ -234,17 +234,30 @@ fun AdminArea(
                     overflow = TextOverflow.Ellipsis
                 )
             }
-
+            HorizontalDivider()
             Row(
                 modifier = Modifier
-                    .padding(
-                        bottom = dimensionResource(id = R.dimen.padding_tiny)
-                    )
                     .fillMaxWidth()
-                    .clickable { onUpdateDeleteClick() }
+                    .clickable { onUpdateDeleteBookClick() }
             ){
                 Text(
                     text = stringResource(id = R.string.Update_Delete_Book),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .wrapContentWidth(),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            HorizontalDivider()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onUpdateDeleteAuthorClick() }
+            ){
+                Text(
+                    text = stringResource(id = R.string.Update_Delete_Author),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier
                         .wrapContentWidth(),
@@ -259,6 +272,7 @@ fun AdminArea(
     }
 
 }
+
 
 
 

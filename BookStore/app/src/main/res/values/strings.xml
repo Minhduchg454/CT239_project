@@ -20,7 +20,8 @@
     <string name="cancel_button">Cancel</string>
     <string name="delete">Delete</string>
     <string name="delete_question">Are you sure you want to delete?</string>
-    <string name="no_item_description">Oops!\nNo items in the inventory.\nTap + to add.</string>
+    <string name="no_item_description">Oops!\nNo book in the app.\n</string>
+    <string name="no_author_description">Oops!\nNo author in the app.\n</string>
     <string name="edit_item_title">Edit Item</string>
     <string name="item">Item</string>
     <string name="item_detail_title">Item Details</string>
@@ -28,65 +29,77 @@
     <string name="item_name_req">Item Name*</string>
     <string name="item_price_req">Item Price*</string>
 
-    <string name="book_edit_title">Book Edit</string>
-    <string name="book_detail_title">Book Details</string>
-    <string name="book_entry_title">Book Item</string>
-    <string name="book_entry_button">Book Entry</string>
-    <string name="book_id">Book ID</string>
-    <string name="book_name_req">Book Name*</string>
-    <string name="book_type_req">Book Type*</string>
-    <string name="book_add_title">Add Book</string>
-    <string name="author_id">Author ID</string>
-    <string name="author_name_rq">Author Name*</string>
-    <string name="add_new_author">Add New Author</string>
-    <string name="publication_info_req">Publication Info*</string>
-    <string name="shelf_number_req">Shelf Number*</string>
-    <string name="subject_req">Subject*</string>
-    <string name="physical_description_req">Physical Description*</string>
-    <string name="save_to_library">Save to Library</string>
-    <string name="remove_from_library">Remove from Library</string>
 
-    <string name="vn_book_name_req">Tên sách: </string>
-    <string name="vn_author_name_req">Tên tác giả: </string>
-    <string name="vn_publication_info_req">Thông tin xuất bản: </string>
-    <string name="vn_shelf_number_req">Stt trên kệ sách: </string>
-    <string name="vn_subject_req">Chủ đề: </string>
-    <string name="vn_physical_description_req">Mô tả vật lý: </string>
-    <string name="vn_book_type_req">Loại sách: </string>
 
 
     <string name="Library">Library</string>
     <string name="Settings">Settings</string>
 
-
     <string name="no">No</string>
     <string name="price">Price</string>
     <string name="quantity_in_stock">Quantity in stock</string>
     <string name="in_stock">%d in stock</string>
-    <string name="quantity_req">Quantity in Stock*</string>
+    <string name="quantity_req">Quantity in stock*</string>
     <string name="save_action">Save</string>
     <string name="sell">Sell</string>
     <string name="yes">Yes</string>
-    <string name="required_fields">*required fields</string>
+    <string name="required_fields">*Required fields</string>
     <string name="search">Search</string>
     <string name="home_button">Home</string>
-    <string name="info_button">Info</string>
+    <string name="settings_button">Settings</string>
+    <string name="search_button">Search</string>
+    <string name="library_button">Library</string>
 
 
-    <string name="App_infomations">Thông tin chung</string>
-    <string name="Mentor">Giảng viên hướng dẫn: Th.s Châu Xuân Phương</string>
-    <string name="Course_Name">Học phần: Niên luận cơ sở ngành (CT239)</string>
-    <string name="Developer">Sinh viên thực hiện: Nguyễn Hữu Đức</string>
-    <string name="StudentId">MSSV: S2200001</string>
+
+    <string name="book_edit_title">Book Edit</string>
+    <string name="book_detail_title">Book Details</string>
+    <string name="book_entry_title">Book Item</string>
+    <string name="book_entry_button">Book Entry</string>
+    <string name="book_id">Book ID</string>
+    <string name="book_add_title">Add Book</string>
+    <string name="author_id">Author ID</string>
+    <string name="add_new_author">Add New Author</string>
+
+    <string name="save_to_library">Save to Library</string>
+    <string name="remove_from_library">Remove from Library</string>
+
+
+
+    <string name="App_infomations">General Information</string>
+    <string name="Mentor">Instructor: Th.s Châu Xuân Phương</string>
+    <string name="Course_Name">Course: Capstone Project (CT239)</string>
+    <string name="Developer">Developer: Nguyễn Hữu Đức</string>
+    <string name="StudentId">Student ID: S2200001</string>
     <string name="App_version">Version: 1.0.0</string>
-    <string name="Data_source">Nguồn dữ liệu: https://lrc.ctu.edu.vn/</string>
+    <string name="Data_source">Data Source: https://lrc.ctu.edu.vn/</string>
 
-    <string name="Admin_areas">Khu vực quản trị viên</string>
-    <string name="Update_Delete_Book">Sửa và xóa sách</string>
-    <string name="Add_new_Book">Thêm sách mới</string>
+    <string name="Admin_areas">Admin Areas</string>
+    <string name="Update_Delete_Book">Edit and Delete Books</string>
+    <string name="Add_new_Book">Add New Book</string>
+    <string name="Update_Delete_Author">Edit and Delete Author</string>
+    <string name="Add_new_Author">Add New Author</string>
 
-    <string name="More">Xem thêm</string>
+
+
+    <string name="More">More</string>
     <string name="Subject">Subject</string>
-    <string name="Type">Tùy chọn</string>
+    <string name="Options">Options</string>
+    <string name="Author_name">Author Name</string>
+    <string name="Book_name">Book Name</string>
+    <string name="Book_type">Book Type</string>
+    <string name="By">by</string>
+    <string name="Publication_info">Publication Info</string>
+    <string name="Physical_description">Physical Description</string>
+    <string name="Shelf_number">Shelf Number</string>
+
+    <string name="Check">Check</string>
+    <string name="List_authors">List authors</string>
+    <string name="edit_author">Edit author</string>
+
+
+
+
+
 
 </resources>

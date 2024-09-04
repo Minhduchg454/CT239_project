@@ -1,29 +1,15 @@
 package com.example.inventory.ui.home
 
-import com.example.inventory.ui.home.HomeViewModel.Companion
-import com.example.inventory.ui.item.BookDetailsDestination
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.inventory.data.Author
 import com.example.inventory.data.AuthorsRepository
 import com.example.inventory.data.BooksRepository
-import com.example.inventory.data.ItemsRepository
-import com.example.inventory.ui.book.BookDetails
-import com.example.inventory.ui.book.toBook
-import com.example.inventory.ui.book.toBookDetails
-import com.example.inventory.ui.home.AuthorsUiState
-import com.example.inventory.ui.item.ItemDetailsViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 class ListSubjectViewModel(
     savedStateHandle: SavedStateHandle, //Luu tru du lieu qua cac lan thay doi cau hinh va tai tao lai viewmodel

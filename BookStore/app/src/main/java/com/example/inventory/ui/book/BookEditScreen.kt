@@ -33,6 +33,7 @@ object BookEditDestination : NavigationDestination {
     override val icon = Icons.Default.Edit
     const val bookIdArg = "bookId"
     val routeWithArgs = "$route/{$bookIdArg}"
+    override val buttonText = R.string.book_edit_title
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,16 +69,19 @@ fun BookEditScreen(
                 navigateBack()
             } },
             modifier = Modifier
+                /*
                 .padding(
                     start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
                     end = innerPadding.calculateEndPadding(LocalLayoutDirection.current),
                     top = innerPadding.calculateTopPadding()
                 )
                 .verticalScroll(rememberScrollState()),
-            navigateToAddAuthor = {
-                navController.navigate(AuthorEntryDestination.route) // Điều hướng đến màn hình thêm tác giả
-            }
 
+                 */
+            ,navigateToAddAuthor = {
+                navController.navigate(AuthorEntryDestination.route) // Điều hướng đến màn hình thêm tác giả
+            },
+            contentPadding = innerPadding
         )
 
     }

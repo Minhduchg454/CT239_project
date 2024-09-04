@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.example.inventory
 
 import android.os.Build
@@ -24,13 +8,10 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.Icons.Filled
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -38,28 +19,28 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.inventory.R.string
-import com.example.inventory.ui.book.BookEntryDestination
 import com.example.inventory.ui.home.HomeDestination
-import com.example.inventory.ui.info.SettingsDestination
+import com.example.inventory.ui.settings.SettingsDestination
 import com.example.inventory.ui.library.LibraryDestination
 import com.example.inventory.ui.navigation.InventoryNavHost
 import com.example.inventory.ui.navigation.NavigationDestination
@@ -71,9 +52,17 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 fun MainScreen (
     navController: NavHostController = rememberNavController()
 ){
+    val screensList = listOf(
+        HomeDestination,
+        LibraryDestination,
+        SearchScreenDestination,
+        SettingsDestination,
+    )
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
+
         // Nội dung chính của màn hình, chiếm toàn bộ không gian còn lại
         InventoryNavHost(
             navController = navController,
@@ -82,30 +71,29 @@ fun MainScreen (
                 .fillMaxSize()
         )
 
-        
         // BottomNavigationBar được đặt cố định ở dưới cùng
         BottomNavigationBar(
             navController = navController,
+            screens = screensList ,
             modifier = Modifier
                 .fillMaxWidth() // Chiếm toàn bộ chiều rộng
         )
     }
-
 }
 
 
+/*
+    Thanh dieu huong duoi cung
+*/
 @Composable
 fun BottomNavigationBar(
     modifier: Modifier = Modifier,
-    navController: NavHostController){
-    val screens = listOf(
-        HomeDestination,
-        LibraryDestination,
-        SearchScreenDestination,
-        SettingsDestination,
-        )
+    screens: List<NavigationDestination>,
+    navController: NavHostController
+){
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
+    val currentDestination = navBackStackEntry?.destination //Lay man hiinh hien tay
 
 
     // Kiem soat giao dien
@@ -113,7 +101,7 @@ fun BottomNavigationBar(
     val useDarkIcons = !isSystemInDarkTheme() //Kiem tra co phai giao dien tôi hay khong
 
     // Màu của thanh điều hướng dưới
-    val navigationBarColor = Color.Transparent
+    val navigationBarColor = Color.Transparent //Chinh sua mau thanh dieu huong
 
     SideEffect {
         systemUiController.setNavigationBarColor(
@@ -133,9 +121,9 @@ fun BottomNavigationBar(
          */
     )
 
-
     NavigationBar (
-        modifier = modifier.height(90.dp),
+        modifier = modifier
+            .height(90.dp),
         containerColor = navigationBarColor
     ) {
         screens.forEach { screen ->
@@ -149,7 +137,10 @@ fun BottomNavigationBar(
 
 }
 
-//Dinh nghia moi muc trong thanh dieu huong duoc hien thi va phan hoi
+
+/*
+Dinh nghia moi muc trong thanh dieu huong duoc hien thi va phan hoi
+ */
 @Composable
 fun RowScope.AddItem(
     screen: NavigationDestination,
@@ -166,28 +157,37 @@ fun RowScope.AddItem(
         icon = {
             Icon(
                 imageVector = screen.icon,
-                contentDescription = screen.route
+                contentDescription = screen.route,
+                modifier = Modifier
+                    .size(24.dp)
             )
         },
         label = {
             Text(
-                text = screen.route,
-                style = TextStyle(
-                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                text = stringResource(id = screen.buttonText),
+                style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                 )
             )
-
-        }
+        },
+        modifier = Modifier
+            .align(Alignment.CenterVertically),
+        colors = NavigationBarItemDefaults.colors(
+            selectedIconColor = MaterialTheme.colorScheme.primary, //Mau sac icon khi duoc chon
+            unselectedIconColor = MaterialTheme.colorScheme.onSurface, //Mau sac icon khi khong duoc chon
+            selectedTextColor = MaterialTheme.colorScheme.primary, //Mau sac text khi duoc chon
+            unselectedTextColor = MaterialTheme.colorScheme.onSurface, //Mau sac text khi khong duoc chon
+        ),
+        alwaysShowLabel = true,
     )
 }
 
 
 
-/**
- * App bar to display title and conditionally display the back navigation.
- */
 
+/*
+Thanh tiêu đề và điều hướng trên cùng
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InventoryTopAppBar(
@@ -202,32 +202,31 @@ fun InventoryTopAppBar(
     val useDarkIcons = !isSystemInDarkTheme()
 
     // Màu sắc cho thanh trạng thái và tiêu đề
-    val statusBarColor = MaterialTheme.colorScheme.background
-    val topAppBarColor = MaterialTheme.colorScheme.background
+    val barColor = MaterialTheme.colorScheme.background
+
 
     // Cập nhật màu nền của thanh trạng thái
     SideEffect {
         systemUiController.setSystemBarsColor(
-            color = statusBarColor,
+            color = barColor,
             darkIcons = useDarkIcons
         )
     }
-
 
     CenterAlignedTopAppBar(
         title = {
             Text(
                 text = title,
-                style = TextStyle(
-                    fontSize = 30.sp, // Kích thước chữ to hơn
-                    fontWeight = FontWeight.Bold, // Chữ in đậm
-                    color = MaterialTheme.colorScheme.primary
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
                 ),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         },
-        modifier = modifier
-            .padding(vertical = 4.dp),
+        modifier = modifier,
         scrollBehavior = scrollBehavior,
         navigationIcon = {
             if (canNavigateBack) {
@@ -240,10 +239,9 @@ fun InventoryTopAppBar(
             }
         },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = topAppBarColor
+            containerColor = barColor
         ),
-
-        )
+    )
 }
 
 

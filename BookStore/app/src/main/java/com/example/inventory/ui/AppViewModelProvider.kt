@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.example.inventory.ui
 
 import android.app.Application
@@ -23,25 +7,28 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.inventory.InventoryApplication
+import com.example.inventory.ui.author.AuthorEditViewModel
 import com.example.inventory.ui.author.AuthorEntryViewModel
+import com.example.inventory.ui.author.ListAuthorViewModel
 import com.example.inventory.ui.book.BookEditViewModel
 import com.example.inventory.ui.book.BookEntryViewModel
 import com.example.inventory.ui.home.HomeViewModel
 import com.example.inventory.ui.home.ListSubjectViewModel
-import com.example.inventory.ui.item.ItemDetailsViewModel
+import com.example.inventory.ui.book.BookDetailsViewModel
+
 
 /**
  * Provides Factory to create instance of ViewModel for the entire Inventory app
  */
+
+
 object AppViewModelProvider {
     val Factory = viewModelFactory {
 
-
-        // Initializer for ItemDetailsViewModel
+        // Initializer for BookDetailsViewModel
         initializer {
-            ItemDetailsViewModel(
+            BookDetailsViewModel(
                 this.createSavedStateHandle(),
-                inventoryApplication().container.itemsRepository ,
                 inventoryApplication().container.booksRepository,
                 inventoryApplication().container.authorsRepository
             )
@@ -50,23 +37,26 @@ object AppViewModelProvider {
         // Initializer for HomeViewModel
         initializer {
             HomeViewModel(
-                inventoryApplication().container.itemsRepository,
                 inventoryApplication().container.booksRepository,
-                inventoryApplication().container.authorsRepository)
+                inventoryApplication().container.authorsRepository
+            )
         }
 
+        // Initializer for BookEntryViewModel
         initializer {
             BookEntryViewModel(
                 inventoryApplication().container.booksRepository,
             )
         }
 
+        // Initializer for AuthorEntryViewModel
         initializer {
             AuthorEntryViewModel(
                 inventoryApplication().container.authorsRepository,
             )
         }
 
+        // Initializer for BookEditViewModel
         initializer {
             BookEditViewModel(
                 this.createSavedStateHandle(),
@@ -74,10 +64,26 @@ object AppViewModelProvider {
             )
         }
 
+        // Initializer for ListSubjectViewModel
         initializer {
             ListSubjectViewModel(
                 this.createSavedStateHandle(),
                 inventoryApplication().container.booksRepository,
+                inventoryApplication().container.authorsRepository
+            )
+        }
+
+        // Initializer for ListAuthorViewModel
+        initializer {
+            ListAuthorViewModel(
+                inventoryApplication().container.authorsRepository
+            )
+        }
+
+        // Initializer for AuthorEditViewModel
+        initializer {
+            AuthorEditViewModel(
+                this.createSavedStateHandle(),
                 inventoryApplication().container.authorsRepository
             )
         }

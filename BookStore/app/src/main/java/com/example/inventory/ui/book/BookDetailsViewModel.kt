@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.inventory.ui.item
+package com.example.inventory.ui.book
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.inventory.data.Author
 import com.example.inventory.data.AuthorsRepository
 import com.example.inventory.data.BooksRepository
-import com.example.inventory.data.ItemsRepository
-import com.example.inventory.ui.book.BookDetails
-import com.example.inventory.ui.book.toBook
-import com.example.inventory.ui.book.toBookDetails
 import com.example.inventory.ui.home.AuthorsUiState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -33,9 +28,8 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-class ItemDetailsViewModel(
+class BookDetailsViewModel(
     savedStateHandle: SavedStateHandle, //Luu tru du lieu qua cac lan thay doi cau hinh va tai tao lai viewmodel
-    private val itemsRepository: ItemsRepository, //Nguon CSDL
     private val booksRepository: BooksRepository,
     private val authorsRepository: AuthorsRepository
 ) : ViewModel() {
@@ -81,10 +75,6 @@ class ItemDetailsViewModel(
     */
 
 
-
-
-
-
     val AuthorsUiState : StateFlow<AuthorsUiState> =
         authorsRepository.getAllAuthorsStream().map { AuthorsUiState(it) }
             .stateIn( //Chuyen doi tu flow thanh StateFlow
@@ -92,7 +82,6 @@ class ItemDetailsViewModel(
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
                 initialValue = AuthorsUiState() //Khoi tao gai tri ban dau
             )
-
 
 
     val bookDetailsUiState: StateFlow<BookDetailsUiState> =

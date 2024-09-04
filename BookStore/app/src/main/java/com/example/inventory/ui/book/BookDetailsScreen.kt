@@ -1,33 +1,14 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package com.example.inventory.ui.item
+package com.example.inventory.ui.book
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -53,7 +34,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -62,28 +42,21 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
 import com.example.inventory.data.Author
 import com.example.inventory.data.Book
-import com.example.inventory.data.Item
 import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.admins.AdminsScreenDestination
-import com.example.inventory.ui.book.toBook
 import com.example.inventory.ui.home.HomeDestination
 import com.example.inventory.ui.home.ListSubjectScreen
 import com.example.inventory.ui.library.LibraryDestination
 import com.example.inventory.ui.navigation.NavigationDestination
 import com.example.inventory.ui.search.SearchScreenDestination
-import com.example.inventory.ui.theme.InventoryTheme
-import kotlinx.coroutines.launch
 
 object BookDetailsDestination : NavigationDestination {
     override val route = "book_details"
@@ -91,6 +64,7 @@ object BookDetailsDestination : NavigationDestination {
     override val icon = Icons.Default.Home
     const val bookIdArg = "bookId"
     val routeWithArgs = "$route/{$bookIdArg}"
+    override val buttonText = R.string.book_detail_title
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -99,7 +73,7 @@ fun BookDetailsScreen(
     navigateToEditBook: (Int) -> Unit,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ItemDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewModel: BookDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navController: NavController
 ) {
     val bookDetailsuiState = viewModel.bookDetailsUiState.collectAsState() //Bien chua du lieu tu viewmodel
@@ -132,7 +106,9 @@ fun BookDetailsScreen(
                         navigateToEditBook(bookId)
                     },
                     shape = MaterialTheme.shapes.medium,
-                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
+                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
 
                 ) {
                     Icon(
@@ -309,7 +285,7 @@ fun BookDetailsCard(
             val authorName = authorList.find { it.id == book.authorId }?.name ?: "Unknown Author"
 
             BookDetailsRow(
-                labelResID = R.string.vn_book_name_req,
+                labelResID = R.string.Book_name,
                 bookDetail = book.name,
                 modifier = Modifier.padding(
                     horizontal = paddingRow
@@ -317,7 +293,7 @@ fun BookDetailsCard(
             )
 
             BookDetailsRow(
-                labelResID = R.string.vn_author_name_req,
+                labelResID = R.string.Author_name,
                 bookDetail = authorName,
                 modifier = Modifier.padding(
                     horizontal = paddingRow
@@ -325,7 +301,7 @@ fun BookDetailsCard(
             )
 
             BookDetailsRow(
-                labelResID = R.string.vn_book_type_req,
+                labelResID = R.string.Book_type,
                 bookDetail = book.type,
                 modifier = Modifier.padding(
                     horizontal = paddingRow
@@ -333,7 +309,7 @@ fun BookDetailsCard(
             )
 
             BookDetailsRow(
-                labelResID = R.string.vn_publication_info_req,
+                labelResID = R.string.Publication_info,
                 bookDetail = book.publicationInfo,
                 modifier = Modifier.padding(
                     horizontal = paddingRow
@@ -341,7 +317,7 @@ fun BookDetailsCard(
             )
 
             BookDetailsRow(
-                labelResID = R.string.vn_shelf_number_req,
+                labelResID = R.string.Shelf_number,
                 bookDetail = book.shelfNumber,
                 modifier = Modifier.padding(
                     horizontal = paddingRow
@@ -349,7 +325,7 @@ fun BookDetailsCard(
             )
 
             BookDetailsRow(
-                labelResID = R.string.vn_subject_req,
+                labelResID = R.string.Subject,
                 bookDetail = book.subject,
                 modifier = Modifier.padding(
                     horizontal = paddingRow
@@ -357,7 +333,7 @@ fun BookDetailsCard(
             )
 
             BookDetailsRow(
-                labelResID = R.string.vn_physical_description_req,
+                labelResID = R.string.Physical_description,
                 bookDetail = book.physicalDescription,
                 modifier = Modifier.padding(
                     horizontal = paddingRow
@@ -406,7 +382,7 @@ fun BookDetailsRow(
 
 
 @Composable
-private fun DeleteConfirmationDialog(
+fun DeleteConfirmationDialog(
     onDeleteConfirm: () -> Unit,
     onDeleteCancel: () -> Unit,
     modifier: Modifier = Modifier

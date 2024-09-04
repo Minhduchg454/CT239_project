@@ -38,19 +38,34 @@ class AuthorEntryViewModel (
     }
 }
 
-fun AuthorDetails.toAuthor(): Author = Author(
-    id = id,
-    name = name,
+data class AuthorUiState(
+    val authorDetails: AuthorDetails = AuthorDetails(),  //AuthorDetails chua thong tin nguoi dung nhap
+    val isEntryValid: Boolean = false //Kiem tra hop le
 )
-
-
 
 data class AuthorDetails(
     val id: Int = 0,
     var name: String = "",
 )
 
-data class AuthorUiState(
-    val authorDetails: AuthorDetails = AuthorDetails(),
-    val isEntryValid: Boolean = false
+
+
+//AuthorDetails to Author
+fun AuthorDetails.toAuthor(): Author = Author(
+    id = id,
+    name = name,
+)
+
+
+//Author to AuthorDetails
+fun Author.toAuthorDetails(): AuthorDetails = AuthorDetails(
+   id = id,
+   name = name,
+)
+
+
+//Author to AuthorUiState
+fun Author.toAuthorUiState(isEntryValid: Boolean = false): AuthorUiState = AuthorUiState(
+    authorDetails = this.toAuthorDetails(),
+    isEntryValid = isEntryValid
 )

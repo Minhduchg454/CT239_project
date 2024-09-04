@@ -16,6 +16,7 @@
 
 package com.example.inventory.ui.navigation
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
 
 /**
@@ -33,4 +34,6 @@ interface NavigationDestination {
     val titleRes: Int
 
     val icon: ImageVector
+
+    val buttonText: Int
 }

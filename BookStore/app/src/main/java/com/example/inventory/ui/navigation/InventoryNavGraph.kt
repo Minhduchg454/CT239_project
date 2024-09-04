@@ -28,7 +28,11 @@ import androidx.navigation.navArgument
 import com.example.inventory.ui.admins.AdminsScreen
 import com.example.inventory.ui.admins.AdminsScreenDestination
 import com.example.inventory.ui.author.AddAuthorScreen
+import com.example.inventory.ui.author.AuthorEditDestination
+import com.example.inventory.ui.author.AuthorEditScreen
 import com.example.inventory.ui.author.AuthorEntryDestination
+import com.example.inventory.ui.author.ListAuthorScreen
+import com.example.inventory.ui.author.ListAuthorScreenDestination
 import com.example.inventory.ui.book.BookEditDestination
 import com.example.inventory.ui.book.BookEditScreen
 import com.example.inventory.ui.book.BookEntryDestination
@@ -36,10 +40,10 @@ import com.example.inventory.ui.book.BookEntryScreen
 import com.example.inventory.ui.home.HomeDestination
 import com.example.inventory.ui.home.HomeScreen
 import com.example.inventory.ui.home.ListSubjectScreen
-import com.example.inventory.ui.info.SettingsDestination
-import com.example.inventory.ui.info.SettingsScreen
-import com.example.inventory.ui.item.BookDetailsDestination
-import com.example.inventory.ui.item.BookDetailsScreen
+import com.example.inventory.ui.settings.SettingsDestination
+import com.example.inventory.ui.settings.SettingsScreen
+import com.example.inventory.ui.book.BookDetailsDestination
+import com.example.inventory.ui.book.BookDetailsScreen
 import com.example.inventory.ui.library.LibraryDestination
 import com.example.inventory.ui.library.LibraryScreen
 import com.example.inventory.ui.search.SearchScreen
@@ -60,6 +64,7 @@ fun InventoryNavHost(
         modifier = modifier
     ) {
 
+        //Home
         composable(route = HomeDestination.route) {
             HomeScreen(
                 navigateToItemUpdate = {
@@ -76,6 +81,7 @@ fun InventoryNavHost(
             )
         }
 
+        //List Subject
         composable(
             route = ListSubjectScreen.routeWithArgs,
             arguments = listOf(navArgument(ListSubjectScreen.subject) {
@@ -90,6 +96,7 @@ fun InventoryNavHost(
             )
         }
 
+        //Book detail
         composable(
             route = BookDetailsDestination.routeWithArgs,
             arguments = listOf(navArgument(BookDetailsDestination.bookIdArg) {
@@ -103,21 +110,13 @@ fun InventoryNavHost(
             )
         }
 
-
-
-
-
-
-
-
-
+        //Book Edit
         composable(
             route = BookEditDestination.routeWithArgs,
             arguments = listOf(navArgument(BookEditDestination.bookIdArg) {
                 type = NavType.IntType
             })
         ) {
-
             BookEditScreen(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() },
@@ -125,7 +124,7 @@ fun InventoryNavHost(
             )
         }
 
-
+        //Search screen
         composable(route = SearchScreenDestination.route,
         ){
             SearchScreen(
@@ -141,21 +140,25 @@ fun InventoryNavHost(
         }
 
 
+        //Settings screen
         composable(
             route = SettingsDestination.route,
         ){
             SettingsScreen(
-                onUpdateDeleteClick = {
+                onUpdateDeleteBookClick = {
                     navController.navigate(AdminsScreenDestination.route)
-
                 },
                 onAddBookClick = {
                     navController.navigate(BookEntryDestination.route)
+                },
+                onUpdateDeleteAuthorClick = {
+                    navController.navigate(ListAuthorScreenDestination.route)
                 }
             )
         }
 
 
+        //Admins screen
         composable(
             route = AdminsScreenDestination.route,
         ) {
@@ -178,23 +181,48 @@ fun InventoryNavHost(
         }
 
 
-
+        //Book Entry Screen
         composable(
             route = BookEntryDestination.route,
         ){
             BookEntryScreen(
                 navigateBack = { navController.navigate(BookEntryDestination.route) },
-                onNavigateUp = {  navController.navigateUp()},
-                navController = navController
+                onNavigateUp = {  navController.navigate(SettingsDestination.route)},
+                navigateToAddAuthor = {navController.navigate(AuthorEntryDestination.route)},
             )
         }
 
-
+        //Add author
         composable(route = AuthorEntryDestination.route,){
             AddAuthorScreen(
-                navigateBack = { navController.navigate(BookEntryDestination.route) }
+                onNavigateUp = { navController.navigate(BookEntryDestination.route) }
             )
         }
+
+
+        composable(route = ListAuthorScreenDestination.route,) {
+            ListAuthorScreen(
+                navigateUp = { navController.navigateUp() },
+                navigateToEditAuthor = {
+                    navController.navigate( "${AuthorEditDestination.route}/${it}" )
+                }
+            )
+        }
+
+        //Author Edit Screen
+        composable(
+            route = AuthorEditDestination.routeWithArgs,
+            arguments = listOf(navArgument(AuthorEditDestination.authorIdArg){
+                type = NavType.IntType
+                })
+            )
+        {
+            AuthorEditScreen(
+                onNavigateUp = { navController.navigateUp() },
+                navigateBack = { navController.navigate(ListAuthorScreenDestination.route) }
+            )
+        }
+
 
     }
 }

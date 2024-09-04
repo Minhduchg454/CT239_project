@@ -1,0 +1,102 @@
+<!--
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+    <!-- Vietnamese Version -->
+    <string name="app_name">Cửa hàng sách</string>
+    <string name="attention">Chú ý</string>
+    <string name="back_button">Quay lại</string>
+    <string name="cancel_button">Hủy</string>
+    <string name="delete">Xóa</string>
+    <string name="delete_question">Bạn có chắc chắn muốn xóa không?</string>
+    <string name="no_item_description">Ôi!\nKhông có sách nào tồn tại trong ứng dụng.\n</string>
+    <string name="no_author_description">Oops!\nKhông có tác giả nào tồn tại trong ứng dụng.\n</string>
+    <string name="edit_item_title">Chỉnh sửa mặt hàng</string>
+    <string name="item">Mặt hàng</string>
+    <string name="item_detail_title">Chi tiết mặt hàng</string>
+    <string name="item_entry_title">Thêm mặt hàng</string>
+    <string name="item_name_req">Tên mặt hàng*</string>
+    <string name="item_price_req">Giá mặt hàng*</string>
+
+    <string name="book_edit_title">Chỉnh sửa sách</string>
+    <string name="book_detail_title">Chi tiết sách</string>
+    <string name="book_entry_title">Thêm sách</string>
+    <string name="book_entry_button">Thêm sách</string>
+    <string name="book_id">ID sách</string>
+
+    <string name="book_add_title">Thêm sách</string>
+    <string name="author_id">ID tác giả</string>
+
+    <string name="add_new_author">Thêm tác giả mới</string>
+
+    <string name="save_to_library">Lưu vào thư viện</string>
+    <string name="remove_from_library">Xóa khỏi thư viện</string>
+
+    <string name="Library">Thư viện</string>
+    <string name="Settings">Cài đặt</string>
+
+    <string name="no">Không</string>
+    <string name="price">Giá</string>
+    <string name="quantity_in_stock">Số lượng trong kho</string>
+    <string name="in_stock">%d trong kho</string>
+    <string name="quantity_req">Số lượng trong kho*</string>
+    <string name="save_action">Lưu</string>
+    <string name="sell">Bán</string>
+    <string name="yes">Có</string>
+    <string name="required_fields">*Các trường bắt buộc</string>
+    <string name="search">Tìm kiếm</string>
+    <string name="home_button">Trang chủ</string>
+    <string name="settings_button">Cài đặt</string>
+    <string name="search_button">Tìm kiếm</string>
+    <string name="library_button">Thư viện</string>
+
+
+
+
+    <string name="App_infomations">Thông tin chung</string>
+    <string name="Mentor">Giảng viên hướng dẫn: Th.s Châu Xuân Phương</string>
+    <string name="Course_Name">Học phần: Niên luận cơ sở ngành (CT239)</string>
+    <string name="Developer">Sinh viên thực hiện: Nguyễn Hữu Đức</string>
+    <string name="StudentId">MSSV: S2200001</string>
+    <string name="App_version">Phiên bản: 1.0.0</string>
+    <string name="Data_source">Nguồn dữ liệu: https://lrc.ctu.edu.vn/</string>
+
+    <string name="Admin_areas">Khu vực quản trị viên</string>
+    <string name="Update_Delete_Book">Chỉnh sửa và xóa sách</string>
+    <string name="Add_new_Book">Thêm sách mới</string>
+    <string name="Update_Delete_Author">Chỉnh sửa và xóa tác giả</string>
+    <string name="Add_new_Author">Thêm tác giả mới</string>
+
+
+
+
+    <string name="More">Xem thêm</string>
+    <string name="Subject">Chủ đề</string>
+    <string name="Options">Tùy chọn</string>
+    <string name="Book_name">Tên sách</string>
+    <string name="Author_name">Tên tác giả</string>
+    <string name="Book_type">Loại sách</string>
+    <string name="Publication_info">Thông tin xuất bản</string>
+    <string name="Physical_description">Mô tả vật lý</string>
+    <string name="Shelf_number">Số thứ tự trên kệ sách</string>
+
+    <string name="By">theo</string>
+    <string name="Check">Chọn</string>
+    <string name="List_authors">Danh sách tác giả</string>
+    <string name="edit_author">Chỉnh sửa tác giả</string>
+
+
+
+</resources>

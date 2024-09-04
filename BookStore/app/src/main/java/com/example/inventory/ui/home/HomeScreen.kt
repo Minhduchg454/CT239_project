@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.example.inventory.ui.home
 
 import android.os.Build
@@ -47,10 +31,12 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -77,15 +63,15 @@ import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
 import com.example.inventory.data.Author
 import com.example.inventory.data.Book
-import com.example.inventory.data.Item
 import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.navigation.NavigationDestination
 import com.example.inventory.ui.theme.InventoryTheme
 
 object HomeDestination : NavigationDestination {
-    override val route = "Home"
+    override val route = "home"
     override val titleRes = R.string.app_name
-    override val icon = Icons.Default.Home
+    override val icon = Icons.Outlined.Home
+    override val buttonText = R.string.home_button
 }
 
 /**
@@ -111,13 +97,17 @@ fun HomeScreen(
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = { //Thanh bar tren cung ~ tieu de
-            InventoryTopAppBar(
-                title = stringResource(id = R.string.app_name),
-                canNavigateBack = false,
-                scrollBehavior = scrollBehavior
-            )
+            Column {
+                InventoryTopAppBar(
+                    title = stringResource(id = R.string.app_name),
+                    canNavigateBack = false,
+                    scrollBehavior = scrollBehavior
+                )
+                //HorizontalDivider()
+            }
         },
     ) { innerPadding ->
+
         HomeBookBodyLazyrow(
             bookList = bookUiState.bookList,
             authorList = authorUiState.authorList,
@@ -141,14 +131,15 @@ fun HomeBookBodyLazyrow(
 ) {
     val booksBySubject = groupBooksBySubject(bookList)
 
+
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize(),
         contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large))
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)) //Khoang cach tung item
     ) {
         booksBySubject.forEach { (subject, books) ->
             item {
-
                 Row (
                   modifier =
                   Modifier
@@ -161,7 +152,6 @@ fun HomeBookBodyLazyrow(
                     Text(
                         text = stringResource(R.string.Subject)+ ": " + subject,
                         style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         ),
                         modifier = Modifier
@@ -191,7 +181,7 @@ fun HomeBookBodyLazyrow(
                             modifier = Modifier
                                 .width(200.dp) // Thiết lập chiều rộng cụ thể
                                 .height(150.dp) // Thiết lập chiều cao cụ thể
-                                .padding(dimensionResource(id = R.dimen.padding_small))
+                                .padding(dimensionResource(id = R.dimen.padding_small)) //Moi card cach nhau
                                 .clickable { onItemClick(book.bookId) }
                         )
                     }
@@ -222,7 +212,10 @@ fun HomeBookBodyLazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
         modifier = modifier
-            .padding(dimensionResource(id = R.dimen.padding_small)),
+            .padding(
+                start = dimensionResource(id = R.dimen.padding_small),
+                end = dimensionResource(id = R.dimen.padding_small),
+            ),
     ) {
         if (bookList.isEmpty() && authorList.isEmpty()) {
             Text(
@@ -240,13 +233,12 @@ fun HomeBookBodyLazyColumn(
             ) {
                 items(items =  bookList, key = { it.bookId }) { book ->
 
-                    val author = authorList.find { it.id == book.authorId }
+                    val author = authorList.find { it.id == book.authorId } ?: Author(name = "Unknown")
 
                     //Chi thuc hien neu author khong phai la null, neu la null thi bo qua chay den bien khac
-                    author?.let {
                         BookCard(
                             book = book,
-                            author = it,
+                            author = author,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .width(200.dp) // Thiết lập chiều rộng cụ thể
@@ -254,7 +246,7 @@ fun HomeBookBodyLazyColumn(
                                 .padding(dimensionResource(id = R.dimen.padding_small))
                                 .clickable { onItemClick(book.bookId) }
                         )
-                    }
+
                 }
             }
         }
@@ -283,6 +275,7 @@ fun BookCard(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp), //thiet lap do cao co cad
         shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors()
     ) {
         Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large)),

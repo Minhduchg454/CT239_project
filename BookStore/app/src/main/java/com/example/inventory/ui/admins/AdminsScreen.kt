@@ -51,7 +51,6 @@ import com.example.inventory.R
 import com.example.inventory.data.Author
 import com.example.inventory.data.Book
 import com.example.inventory.ui.AppViewModelProvider
-import com.example.inventory.ui.book.customTextFieldColors
 import com.example.inventory.ui.home.BookCard
 import com.example.inventory.ui.home.HomeBookBodyLazyColumn
 import com.example.inventory.ui.home.HomeViewModel
@@ -65,6 +64,7 @@ object AdminsScreenDestination : NavigationDestination {
     override val route = "Edit_Books"
     override val titleRes = R.string.book_edit_title
     override val icon = Icons.Default.Edit
+    override val buttonText = R.string.book_edit_title
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

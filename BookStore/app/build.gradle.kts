@@ -96,5 +96,8 @@ dependencies {
     //Member properties
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.20-RC2")
 
+    //Thu vien icon
+    implementation ("androidx.compose.material:material-icons-extended:1.6.8")
+
 
 }

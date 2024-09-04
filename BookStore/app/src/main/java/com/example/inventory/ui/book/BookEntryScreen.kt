@@ -3,9 +3,12 @@ package com.example.inventory.ui.book
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -35,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -50,6 +54,7 @@ import com.example.inventory.data.Author
 import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.author.AuthorEntryDestination
 import com.example.inventory.ui.navigation.NavigationDestination
+import com.example.inventory.ui.theme.TextFieldColorsCustom
 import kotlinx.coroutines.launch
 
 
@@ -57,6 +62,7 @@ object BookEntryDestination : NavigationDestination {
     override val route = "Add Book " //Nhap lieu cho item
     override val titleRes = R.string.book_add_title
     override val icon = Icons.Default.Add
+    override val buttonText = R.string.book_add_title
 }
 
 
@@ -65,9 +71,9 @@ object BookEntryDestination : NavigationDestination {
 fun BookEntryScreen(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
+    navigateToAddAuthor: () -> Unit,
     canNavigateBack: Boolean = true,
     viewModel: BookEntryViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -97,24 +103,17 @@ fun BookEntryScreen(
             onSaveClick = {
                 coroutineScope.launch {
                     viewModel.saveBook()
-                    navigateBack()
+                    navigateBack() //lam moi man hinh nhap lieu
                 }
             },
             modifier = Modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth(),
-            navigateToAddAuthor = {
-                navController.navigate(AuthorEntryDestination.route) // Điều hướng đến màn hình thêm tác giả
-            }
+                .fillMaxSize(),
+            navigateToAddAuthor = navigateToAddAuthor,
+            contentPadding = innerPadding
         )
     }
 
 }
-
-
-
-
 
 
 @Composable
@@ -123,25 +122,32 @@ fun BookEntryBody(
     onBookValueChange: (BookDetails) -> Unit,
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier,
-    navigateToAddAuthor: () ->Unit
+    navigateToAddAuthor: () ->Unit,
+    contentPadding: PaddingValues
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large)),
-        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium))
-    ) {
-        BookInputForm(
-            bookDetails = bookUiState.bookDetails,
-            onValueChange = onBookValueChange,
-            modifier = Modifier.fillMaxWidth(),
-            navigateToAddAuthor = navigateToAddAuthor
+    LazyColumn(
+        contentPadding = contentPadding,
+        modifier = modifier.padding(
+            //top = dimensionResource(id = R.dimen.padding_medium),
+            start = dimensionResource(id = R.dimen.padding_medium),
+            end = dimensionResource(id = R.dimen.padding_medium),
         )
-        Button(
-            onClick = onSaveClick,
-            enabled = bookUiState.isEntryValid,
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = stringResource(R.string.save_action))
+    ) {
+        item {
+            BookInputForm(
+                bookDetails = bookUiState.bookDetails,
+                onValueChange = onBookValueChange,
+                modifier = Modifier.fillMaxWidth(),
+                navigateToAddAuthor = navigateToAddAuthor
+            )
+            Button(
+                onClick = onSaveClick,
+                enabled = bookUiState.isEntryValid,
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = stringResource(R.string.save_action))
+            }
         }
     }
 }
@@ -153,12 +159,7 @@ fun BookEntryBody(
 
 
 // Định nghĩa biến màu cho các trường nhập liệu
-@Composable
-fun customTextFieldColors() = OutlinedTextFieldDefaults.colors(
-    focusedContainerColor = MaterialTheme.colorScheme.surface,
-    unfocusedContainerColor = MaterialTheme.colorScheme.outlineVariant,
-    disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer
-)
+
 
 
 
@@ -250,12 +251,14 @@ fun BookInputForm(
             OutlinedTextField(
                 value = selectAuthor?.name ?: "",
                 onValueChange = {},
-                label = {Text(stringResource(id = R.string.author_name_rq))},
+                label = {Text(stringResource(id = R.string.Author_name) + "*") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 readOnly = true, // Để người dùng chỉ có thể chọn từ dropdown
                 shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.menuAnchor().fillMaxWidth(),
-                colors = customTextFieldColors()
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
+                colors = TextFieldColorsCustom()
             )
 
             ExposedDropdownMenu(
@@ -290,8 +293,8 @@ fun BookInputForm(
         OutlinedTextField(
             value = bookDetails.name, //Hien thi trong truong nhap du lieu
             onValueChange = { onValueChange(bookDetails.copy(name = it)) }, //lambda cap nhat khi gia tri truong nhap thay doi
-            label = { Text(stringResource(R.string.book_name_req)) }, //nhan
-            colors = customTextFieldColors(),
+            label = { Text(stringResource(R.string.Book_name)+ "*") }, //nhan
+            colors = TextFieldColorsCustom(),
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
@@ -307,8 +310,8 @@ fun BookInputForm(
         OutlinedTextField(
             value = bookDetails.publicationInfo, // Hiển thị trong trường nhập liệu cho thông tin xuất bản
             onValueChange = { onValueChange(bookDetails.copy(publicationInfo = it)) }, // Lambda cập nhật khi giá trị thay đổi
-            label = { Text(stringResource(R.string.publication_info_req)) }, // Nhãn
-            colors = customTextFieldColors(),
+            label = { Text(stringResource(R.string.Publication_info)+ "*") }, // Nhãn
+            colors = TextFieldColorsCustom(),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
             enabled = enabled,
@@ -322,8 +325,8 @@ fun BookInputForm(
         OutlinedTextField(
             value = bookDetails.shelfNumber, // Hiển thị trong trường nhập liệu cho số kệ
             onValueChange = { onValueChange(bookDetails.copy(shelfNumber = it)) }, // Lambda cập nhật khi giá trị thay đổi
-            label = { Text(stringResource(R.string.shelf_number_req)) }, // Nhãn
-            colors = customTextFieldColors(),
+            label = { Text(stringResource(R.string.Shelf_number)+ "*") }, // Nhãn
+            colors = TextFieldColorsCustom(),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
             enabled = enabled,
@@ -338,9 +341,11 @@ fun BookInputForm(
         OutlinedTextField(
             value = bookDetails.physicalDescription, // Hiển thị trong trường nhập liệu cho mô tả vật lý
             onValueChange = { onValueChange(bookDetails.copy(physicalDescription = it)) }, // Lambda cập nhật khi giá trị thay đổi
-            label = { Text(stringResource(R.string.physical_description_req)) }, // Nhãn
-            colors = customTextFieldColors(),
-            modifier = Modifier.fillMaxWidth().imePadding(), // Thêm imePadding() để tránh bị bàn phím che,
+            label = { Text(stringResource(R.string.Physical_description)+ "*") }, // Nhãn
+            colors = TextFieldColorsCustom(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .imePadding(), // Thêm imePadding() để tránh bị bàn phím che,
             shape = RoundedCornerShape(16.dp),
             enabled = enabled,
             singleLine = true,
@@ -358,12 +363,14 @@ fun BookInputForm(
                 OutlinedTextField(
                     value = selectTypeBook,
                     onValueChange = {},
-                    label = {Text(stringResource(id = R.string.book_type_req))},
+                    label = {Text(stringResource(id = R.string.Book_type)+ "*")},
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTypeBook) },
                     readOnly = true, // Để người dùng chỉ có thể chọn từ dropdown
                     shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier.menuAnchor().fillMaxWidth(),
-                    colors = customTextFieldColors()
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth(),
+                    colors = TextFieldColorsCustom()
                 )
 
 
@@ -395,12 +402,14 @@ fun BookInputForm(
                 OutlinedTextField(
                     value = selectSubject,
                     onValueChange = {},
-                    label = {Text(stringResource(id = R.string.subject_req))},
+                    label = {Text(stringResource(id = R.string.Subject)+ "*")},
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedSubject) },
                     readOnly = true, // Để người dùng chỉ có thể chọn từ dropdown
                     shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier.menuAnchor().fillMaxWidth(),
-                    colors = customTextFieldColors()
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth(),
+                    colors = TextFieldColorsCustom()
                 )
 
 
@@ -422,14 +431,6 @@ fun BookInputForm(
 
                 }
             }
-
-
-
-
-
-
-
-
 
         if (enabled) {
             Text(
