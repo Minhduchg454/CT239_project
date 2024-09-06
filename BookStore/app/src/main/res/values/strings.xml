@@ -97,6 +97,41 @@
     <string name="List_authors">List authors</string>
     <string name="edit_author">Edit author</string>
 
+    <string name="snackBar_save_books">Book saved successfully</string>
+    <string name="snackBar_save_authors">Author saved successfully</string>
+    <string name="snackBar_update_books">Book update successfully</string>
+    <string name="snackBar_update_authors">Author update successfully</string>
+
+    <string name="subject_information_technology">Information Technology</string>
+    <string name="subject_philosophy">Philosophy</string>
+    <string name="subject_foreign_language">Foreign Language</string>
+    <string name="subject_physical_education">Physical Education</string>
+    <string name="subject_pedagogy">Pedagogy</string>
+    <string name="subject_biotechnology">Biotechnology</string>
+    <string name="subject_economics">Economics</string>
+    <string name="subject_agriculture">Agriculture</string>
+    <string name="subject_fisheries">Fisheries</string>
+    <string name="subject_livestock">Livestock</string>
+    <string name="subject_veterinary_medicine">Veterinary Medicine</string>
+    <string name="subject_processing">Processing</string>
+    <string name="subject_environment_and_resources">Environment and Resources</string>
+    <string name="subject_tourism">Tourism</string>
+    <string name="subject_law">Law</string>
+    <string name="subject_construction">Construction</string>
+    <string name="subject_other">Other</string>
+
+
+    <string name="book_type_printed">Printed Book</string>
+    <string name="book_type_cd_rom">CD-ROM</string>
+    <string name="book_type_thesis_printed">Printed Thesis</string>
+    <string name="book_type_thesis_digital">Digital Thesis</string>
+    <string name="book_type_report_printed">Printed Research Report</string>
+    <string name="book_type_report_digital">Digital Research Report</string>
+    <string name="book_type_ebook">E-Book</string>
+    <string name="book_type_dissertation_printed">Printed Dissertation</string>
+    <string name="book_type_dissertation_digital">Digital Dissertation</string>
+    <string name="book_type_thesis">Printed Dissertation</string>
+
 
 
 

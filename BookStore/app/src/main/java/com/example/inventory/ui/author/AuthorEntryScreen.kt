@@ -22,6 +22,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -35,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -50,6 +54,7 @@ import com.example.inventory.ui.book.DeleteConfirmationDialog
 import com.example.inventory.ui.home.HomeBookBodyLazyColumn
 import com.example.inventory.ui.navigation.NavigationDestination
 import com.example.inventory.ui.theme.TextFieldColorsCustom
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -70,7 +75,10 @@ fun AddAuthorScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val messageSaveAuthor = stringResource(R.string.snackBar_save_authors)
 
+    val keyboardController = LocalSoftwareKeyboardController.current // Dieu khien ban phim
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -84,6 +92,7 @@ fun AddAuthorScreen(
                 )
             }
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { innerPadding ->
 
         AuthorBody(
@@ -92,8 +101,12 @@ fun AddAuthorScreen(
                 .fillMaxWidth(),
             authorUiState = viewModel.authorUiState ,
             onSaveClick = {
+                keyboardController?.hide()
                 coroutineScope.launch {
                     viewModel.saveAuthor()
+                    snackbarHostState.showSnackbar(
+                        message = messageSaveAuthor,
+                    )
                     onNavigateUp ()
                 }
             },
@@ -139,7 +152,9 @@ fun AuthorBody(
 
 
         Button(
-            onClick = onSaveClick,
+            onClick = {
+                onSaveClick ()
+            },
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.small,
             enabled = authorUiState.isEntryValid,

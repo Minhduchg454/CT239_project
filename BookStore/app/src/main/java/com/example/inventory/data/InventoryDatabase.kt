@@ -10,8 +10,7 @@ import androidx.room.RoomDatabase
  */
 @Database(entities = [Book::class, Author::class], version = 3, exportSchema = false)
 abstract class InventoryDatabase : RoomDatabase() {
-
-
+    
     abstract fun bookDao(): BooksDao
     abstract fun authorDao(): AuthorDao
 
@@ -36,7 +35,6 @@ abstract class InventoryDatabase : RoomDatabase() {
                     //.fallbackToDestructiveMigration() //Xoa bang cu va tao bang moi khi co them du lieu
                     .build()
                     .also { Instance = it }
-
             }
         }
     }

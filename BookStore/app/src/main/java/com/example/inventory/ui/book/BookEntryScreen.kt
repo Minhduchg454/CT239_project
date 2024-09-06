@@ -26,6 +26,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -41,10 +44,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.inventory.InventoryApplication
@@ -77,7 +82,8 @@ fun BookEntryScreen(
     modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
-
+    val snackbarHostState = remember { SnackbarHostState() } //Quan ly trang thai cua snackbar
+    val keyboardController = LocalSoftwareKeyboardController.current // Dieu khien ban phim
     /*
     Bạn thường sử dụng rememberCoroutineScope() khi bạn cần chạy một coroutine để thực hiện các tác vụ không đồng bộ
     (như tải dữ liệu, lưu dữ liệu, hoặc thao tác trên cơ sở dữ liệu) trong một composable,
@@ -85,6 +91,7 @@ fun BookEntryScreen(
     */
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val saveSuccessMessage = stringResource(R.string.snackBar_save_books)
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -95,16 +102,23 @@ fun BookEntryScreen(
                 navigateUp = onNavigateUp,
                 scrollBehavior = scrollBehavior
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
         BookEntryBody(
             bookUiState = viewModel.bookUiState,
             onBookValueChange = viewModel::updateUiState,
             onSaveClick = {
-                coroutineScope.launch {
+                keyboardController?.hide()
+
+                coroutineScope.launch { //Hoat dong ngam, khong anh huong den Flow chinh
                     viewModel.saveBook()
+                    val snackbarResult = snackbarHostState.showSnackbar(
+                        message = saveSuccessMessage
+                    )
                     navigateBack() //lam moi man hinh nhap lieu
                 }
+
             },
             modifier = Modifier
                 .fillMaxSize(),
@@ -198,38 +212,52 @@ fun BookInputForm(
     //Trang thai nguoi dung dang nhap tac gia
     var isCreatingAuthor by remember { mutableStateOf(false) }
 
-    val listBookType = listOf<String>(
-        "Sách In",
-        "CD - ROM",
-        "Luận văn in ấn",
-        "Luận văn điện tử",
-        "Báo cáo NCKH in ấn",
-        "Báo cáo NCKH điện tử",
-        "Sách điện tử",
-        "Khóa luận in ấn",
-        "Luận án điện tử",
-        "Luận án in ấn"
+
+    val listBookTypeRes = listOf(
+        R.string.book_type_printed,
+        R.string.book_type_cd_rom,
+        R.string.book_type_thesis_printed,
+        R.string.book_type_thesis_digital,
+        R.string.book_type_report_printed,
+        R.string.book_type_report_digital,
+        R.string.book_type_ebook,
+        R.string.book_type_dissertation_printed,
+        R.string.book_type_dissertation_digital,
+        R.string.book_type_thesis
     )
 
-    val listSubject = listOf<String>(
-        "Công nghệ thông tin",
-        "Triết học",
-        "Ngoại ngữ",
-        "Giáo dục thể chất",
-        "Sư phạm",
-        "Công nghệ sinh học",
-        "Kinh tế",
-        "Nông nghiệp",
-        "Thủy sản",
-        "Chăn nuôi",
-        "Thú y",
-        "Chế biến",
-        "Môi tường và tài nguyên",
-        "Du lịch",
-        "Luật",
-        "Xây dựng",
-        "Khác"
+
+
+    val listSubjectRes = listOf(
+        (R.string.subject_information_technology),
+        (R.string.subject_philosophy),
+        (R.string.subject_foreign_language),
+        (R.string.subject_physical_education),
+        (R.string.subject_pedagogy),
+        (R.string.subject_biotechnology),
+        (R.string.subject_economics),
+        (R.string.subject_agriculture),
+        (R.string.subject_fisheries),
+        (R.string.subject_livestock),
+        (R.string.subject_veterinary_medicine),
+        (R.string.subject_processing),
+        (R.string.subject_environment_and_resources),
+        (R.string.subject_tourism),
+        (R.string.subject_law),
+        (R.string.subject_construction),
+        (R.string.subject_other)
     )
+
+    val context = LocalContext.current
+    val listSubjectToString = listSubjectRes.map { context.getString(it) } //Chuyen doi de su dung trong compose khac, hoac gan du lieu
+    val listBookTypeToString = listBookTypeRes.map { context.getString(it) }
+
+
+
+
+
+
+
 
 
     LaunchedEffect(bookDetails) {
@@ -379,7 +407,7 @@ fun BookInputForm(
                     expanded = expandedTypeBook,
                     onDismissRequest = { expandedTypeBook = false }
                 ) {
-                    listBookType.forEach { typeBook ->
+                    listBookTypeToString.forEach { typeBook ->
                         DropdownMenuItem(
                             text = { Text(typeBook)},
                             onClick = {
@@ -418,9 +446,9 @@ fun BookInputForm(
                     expanded = expandedSubject,
                     onDismissRequest = { expandedSubject = false }
                 ) {
-                    listSubject.forEach { typeSubject ->
+                    listSubjectToString.forEach { typeSubject ->
                         DropdownMenuItem(
-                            text = { Text(typeSubject)},
+                            text = { Text( typeSubject )},
                             onClick = {
                                 selectSubject = typeSubject
                                 onValueChange(bookDetails.copy(subject = typeSubject))
