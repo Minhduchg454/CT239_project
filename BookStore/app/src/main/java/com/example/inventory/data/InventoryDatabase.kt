@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 /**
  * Database class with a singleton Instance object.
  */
-@Database(entities = [Book::class, Author::class], version = 3, exportSchema = false)
+@Database(entities = [Book::class, Author::class], version = 4, exportSchema = false)
 abstract class InventoryDatabase : RoomDatabase() {
     
     abstract fun bookDao(): BooksDao

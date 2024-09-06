@@ -2,6 +2,7 @@ package com.example.inventory.ui.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -15,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
@@ -25,8 +27,8 @@ object ListSubjectScreen : NavigationDestination {
     override val route = "List_Subject"
     override val titleRes = R.string.Subject
     override val icon = Icons.Default.MoreVert
-    const val subject = "subject"
-    val routeWithArgs = "${route}/{$subject}"
+    val subjectIdArg = "subject"
+    val routeWithArgs = "${route}/{$subjectIdArg}"
     override val buttonText = R.string.Subject
 }
 
@@ -51,7 +53,7 @@ fun ListSubjectScreen(
         topBar = { //Thanh bar tren cung ~ tieu de
             Column {
                 InventoryTopAppBar(
-                    title = viewModel.subjectKey,
+                    title = stringResource(viewModel.subjectKey),
                     canNavigateBack = true,
                     navigateUp = navigateBack,
                     scrollBehavior = scrollBehavior

@@ -38,10 +38,10 @@ interface BooksDao {
     fun searchBooksByName(name: String): Flow<List<Book>>
 
     @Query ("SELECT * FROM books WHERE LOWER(subject) LIKE '%' || LOWER(:subject) || '%' ORDER BY name ASC")
-    fun searchBooksBySubject(subject: String): Flow<List<Book>>
+    fun searchBooksBySubject(subject: Int): Flow<List<Book>>
 
     @Query ("SELECT * FROM books WHERE LOWER(type) LIKE '%' || LOWER(:type) || '%' ORDER BY name ASC")
-    fun searchBooksByType(type: String): Flow<List<Book>>
+    fun searchBooksByType(type: Int): Flow<List<Book>>
 
     @Query ("SELECT * FROM books WHERE authorId = :authorId ORDER BY name ASC")
     fun searchBooksByAuthor(authorId: Int): Flow<List<Book>>

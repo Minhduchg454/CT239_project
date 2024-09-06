@@ -3,7 +3,9 @@ package com.example.inventory.ui.book
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
+import com.example.inventory.R
 import com.example.inventory.data.Book
 import com.example.inventory.data.BooksRepository
 
@@ -33,8 +35,8 @@ class BookEntryViewModel (
      */
     private fun validateInput(uiState: BookDetails = bookUiState.bookDetails): Boolean {
         return with(uiState) {
-            name.isNotBlank() && type.isNotBlank() && publicationInfo.isNotBlank()
-                    && shelfNumber.isNotBlank() && subject.isNotBlank() && physicalDescription.isNotBlank()
+            name.isNotBlank() && type!=R.string.empty_string && publicationInfo.isNotBlank()
+                    && shelfNumber.isNotBlank() && subject!=R.string.empty_string && physicalDescription.isNotBlank()
         }
     }
 
@@ -100,11 +102,11 @@ data class BookUiState(
 data class BookDetails(
     val bookId: Int = 0,
     val name: String = "",
-    val type: String ="",
+    val type: Int =R.string.empty_string,
     val authorId: Int? = 0, //cho phep gia tri null
     val publicationInfo: String ="",
     val shelfNumber: String ="",
-    val subject: String = "",
+    val subject: Int = R.string.empty_string,
     val physicalDescription: String ="",
     val saveToLibrary: Boolean = false
 )

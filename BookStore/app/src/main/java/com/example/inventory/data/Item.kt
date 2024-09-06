@@ -36,11 +36,11 @@ data class Book(
     @PrimaryKey (autoGenerate = true)
     val bookId: Int =0,
     val name: String,
-    val type: String,
+    val type: Int, //Dung stringRes de thay doi ngon ngu tuy theo ung dung
     val authorId: Int? = null, //cho phep gia tri null
     val publicationInfo: String,
     val shelfNumber: String,
-    val subject: String,
+    val subject: Int,
     val physicalDescription: String,
     val saveToLibrary: Boolean
 )

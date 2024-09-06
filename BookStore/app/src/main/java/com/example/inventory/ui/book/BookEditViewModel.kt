@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.inventory.R
 import com.example.inventory.data.BooksRepository
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -43,8 +44,8 @@ class BookEditViewModel (
      */
     private fun validateInput(uiState: BookDetails = bookEditUiState.bookDetails): Boolean {
         return with(uiState) {
-            name.isNotBlank() && type.isNotBlank() && publicationInfo.isNotBlank()
-                    && shelfNumber.isNotBlank() && subject.isNotBlank() && physicalDescription.isNotBlank()
+            name.isNotBlank() && type!= R.string.empty_string && publicationInfo.isNotBlank()
+                    && shelfNumber.isNotBlank() && subject!= R.string.empty_string && physicalDescription.isNotBlank()
         }
     }
 

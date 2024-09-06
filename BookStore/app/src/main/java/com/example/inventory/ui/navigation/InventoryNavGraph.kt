@@ -84,8 +84,8 @@ fun InventoryNavHost(
         //List Subject
         composable(
             route = ListSubjectScreen.routeWithArgs,
-            arguments = listOf(navArgument(ListSubjectScreen.subject) {
-                type = NavType.StringType
+            arguments = listOf(navArgument(ListSubjectScreen.subjectIdArg) {
+                type = NavType.IntType
             })
         ) {
             ListSubjectScreen(

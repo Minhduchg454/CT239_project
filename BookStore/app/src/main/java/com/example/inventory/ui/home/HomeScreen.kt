@@ -82,7 +82,7 @@ object HomeDestination : NavigationDestination {
 @Composable
 fun HomeScreen(
     navigateToItemUpdate: (Int) -> Unit, //Di chuyen toi item da click, id cua item
-    navigateToListSubject: (String) -> Unit,
+    navigateToListSubject: (Int) -> Unit,
     modifier: Modifier = Modifier,
     viewModel:  HomeViewModel = viewModel (factory = AppViewModelProvider.Factory),
 ) {
@@ -125,7 +125,7 @@ fun HomeBookBodyLazyrow(
     bookList: List<Book>,
     authorList: List<Author>,
     onItemClick: (Int) -> Unit,
-    navigateToListSubject: (String) -> Unit,
+    navigateToListSubject: (Int) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -150,7 +150,7 @@ fun HomeBookBodyLazyrow(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = stringResource(R.string.Subject)+ ": " + subject,
+                        text = stringResource(R.string.Subject)+ ": " + stringResource( subject ),
                         style = MaterialTheme.typography.titleMedium.copy(
                             color = MaterialTheme.colorScheme.primary
                         ),
@@ -257,7 +257,7 @@ fun HomeBookBodyLazyColumn(
     Nhóm sách theo chủ đề
 
  */
-fun groupBooksBySubject(books: List<Book>): Map<String, List<Book>> {
+fun groupBooksBySubject(books: List<Book>): Map<Int, List<Book>> {
     return books.groupBy { it.subject }
 }
 

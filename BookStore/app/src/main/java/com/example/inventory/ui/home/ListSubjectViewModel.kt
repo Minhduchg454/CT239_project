@@ -36,7 +36,7 @@ class ListSubjectViewModel(
         private const val TIMEOUT_MILLIS = 5_000L
     }
 
-    val subjectKey: String = checkNotNull(savedStateHandle[ListSubjectScreen.subject])
+    val subjectKey: Int = checkNotNull(savedStateHandle[ListSubjectScreen.subjectIdArg])
 
     val subjectUiState: StateFlow<BooksUiState> =
         booksRepository.searchBooksBySubject(subjectKey)

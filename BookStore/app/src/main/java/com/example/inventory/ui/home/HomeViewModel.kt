@@ -80,6 +80,8 @@ class HomeViewModel (
 
 
 
+
+
     val searchUiState: StateFlow<BooksUiState> = searchQuery
         .flatMapLatest { query -> // Phản ứng với sự thay đổi của chuỗi tìm kiếm
             if (query.isEmpty()) {
@@ -87,8 +89,8 @@ class HomeViewModel (
             } else {
                 when (typeSearchQuery.value) {
                     "Name" -> booksRepository.searchBooksByName(query)
-                    "Type" -> booksRepository.searchBooksByType(query)
-                    "Subject" -> booksRepository.searchBooksBySubject(query)
+                    //"Type" -> booksRepository.searchBooksByType((query))
+                    //"Subject" -> booksRepository.searchBooksBySubject(query)
                     "Author" -> {
                                 authorsRepository.getIdByName(query)
                                     .flatMapLatest { authorId ->

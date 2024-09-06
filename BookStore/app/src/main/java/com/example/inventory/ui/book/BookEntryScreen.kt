@@ -196,8 +196,8 @@ fun BookInputForm(
     }
 
 
-    var selectTypeBook by remember { mutableStateOf("") }
-    var selectSubject by remember { mutableStateOf("") }
+    var selectTypeBook by remember { mutableStateOf(R.string.empty_string) }
+    var selectSubject by remember { mutableStateOf(R.string.empty_string) }
 
     //Trang thai hien thi DropdownMenu
     var expanded by remember { mutableStateOf(false) }
@@ -251,11 +251,6 @@ fun BookInputForm(
     val context = LocalContext.current
     val listSubjectToString = listSubjectRes.map { context.getString(it) } //Chuyen doi de su dung trong compose khac, hoac gan du lieu
     val listBookTypeToString = listBookTypeRes.map { context.getString(it) }
-
-
-
-
-
 
 
 
@@ -389,7 +384,7 @@ fun BookInputForm(
                 onExpandedChange = {   expandedTypeBook = !expandedTypeBook } //
             ) {
                 OutlinedTextField(
-                    value = selectTypeBook,
+                    value = stringResource( selectTypeBook ),
                     onValueChange = {},
                     label = {Text(stringResource(id = R.string.Book_type)+ "*")},
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTypeBook) },
@@ -407,9 +402,9 @@ fun BookInputForm(
                     expanded = expandedTypeBook,
                     onDismissRequest = { expandedTypeBook = false }
                 ) {
-                    listBookTypeToString.forEach { typeBook ->
+                    listBookTypeRes.forEach { typeBook ->
                         DropdownMenuItem(
-                            text = { Text(typeBook)},
+                            text = { Text(stringResource(typeBook))},
                             onClick = {
                                 selectTypeBook = typeBook
                                 onValueChange(bookDetails.copy(type = typeBook))
@@ -428,7 +423,7 @@ fun BookInputForm(
                 onExpandedChange = {   expandedSubject = !expandedSubject } //
             ) {
                 OutlinedTextField(
-                    value = selectSubject,
+                    value = stringResource( selectSubject),
                     onValueChange = {},
                     label = {Text(stringResource(id = R.string.Subject)+ "*")},
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedSubject) },
@@ -446,9 +441,9 @@ fun BookInputForm(
                     expanded = expandedSubject,
                     onDismissRequest = { expandedSubject = false }
                 ) {
-                    listSubjectToString.forEach { typeSubject ->
+                    listSubjectRes.forEach { typeSubject ->
                         DropdownMenuItem(
-                            text = { Text( typeSubject )},
+                            text = { Text( stringResource( typeSubject ))},
                             onClick = {
                                 selectSubject = typeSubject
                                 onValueChange(bookDetails.copy(subject = typeSubject))

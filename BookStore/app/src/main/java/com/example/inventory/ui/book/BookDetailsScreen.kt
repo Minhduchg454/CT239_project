@@ -302,7 +302,7 @@ fun BookDetailsCard(
 
             BookDetailsRow(
                 labelResID = R.string.Book_type,
-                bookDetail = book.type,
+                bookDetail = stringResource( book.type ),
                 modifier = Modifier.padding(
                     horizontal = paddingRow
                 )
@@ -326,7 +326,7 @@ fun BookDetailsCard(
 
             BookDetailsRow(
                 labelResID = R.string.Subject,
-                bookDetail = book.subject,
+                bookDetail = stringResource( book.subject ),
                 modifier = Modifier.padding(
                     horizontal = paddingRow
                 )
