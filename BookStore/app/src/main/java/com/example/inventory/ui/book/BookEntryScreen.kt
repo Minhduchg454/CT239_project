@@ -1,6 +1,7 @@
 package com.example.inventory.ui.book
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -213,6 +214,7 @@ fun BookInputForm(
     var isCreatingAuthor by remember { mutableStateOf(false) }
 
 
+    /*
     val listBookTypeRes = listOf(
         R.string.book_type_printed,
         R.string.book_type_cd_rom,
@@ -248,11 +250,46 @@ fun BookInputForm(
         (R.string.subject_other)
     )
 
+
     val context = LocalContext.current
     val listSubjectToString = listSubjectRes.map { context.getString(it) } //Chuyen doi de su dung trong compose khac, hoac gan du lieu
     val listBookTypeToString = listBookTypeRes.map { context.getString(it) }
 
 
+    */
+
+    val listBookType = listOf(
+        "Printed Book",
+        "CD-ROM",
+        "Printed Thesis",
+        "Digital Thesis",
+        "Printed Report",
+        "Digital Report",
+        "E-Book",
+        "Printed Dissertation",
+        "Digital Dissertation",
+        "Thesis"
+    )
+
+    val listSubject = listOf(
+        "Information Technology",
+        "Philosophy",
+        "Foreign Language",
+        "Physical Education",
+        "Pedagogy",
+        "Biotechnology",
+        "Economics",
+        "Agriculture",
+        "Fisheries",
+        "Livestock",
+        "Veterinary Medicine",
+        "Processing",
+        "Environment and Resources",
+        "Tourism",
+        "Law",
+        "Construction",
+        "Other"
+    )
 
 
 
@@ -389,7 +426,7 @@ fun BookInputForm(
                 onExpandedChange = {   expandedTypeBook = !expandedTypeBook } //
             ) {
                 OutlinedTextField(
-                    value = selectTypeBook,
+                    value = stringResource(stringTypeToResourceId(bookDetails.type)),
                     onValueChange = {},
                     label = {Text(stringResource(id = R.string.Book_type)+ "*")},
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTypeBook) },
@@ -407,11 +444,14 @@ fun BookInputForm(
                     expanded = expandedTypeBook,
                     onDismissRequest = { expandedTypeBook = false }
                 ) {
-                    listBookTypeToString.forEach { typeBook ->
+                    listBookType.forEach { typeBook ->
                         DropdownMenuItem(
-                            text = { Text(typeBook)},
+                            text = {
+                                val typeId = stringTypeToResourceId(typeBook)
+                                Text(stringResource(typeId))
+                                   },
                             onClick = {
-                                selectTypeBook = typeBook
+                                //selectTypeBook = stringTypeToResourceId( typeBook )
                                 onValueChange(bookDetails.copy(type = typeBook))
                                 expandedTypeBook = false
                             }
@@ -428,7 +468,7 @@ fun BookInputForm(
                 onExpandedChange = {   expandedSubject = !expandedSubject } //
             ) {
                 OutlinedTextField(
-                    value = selectSubject,
+                    value = stringResource(stringSubjectToResourceId(bookDetails.subject)),
                     onValueChange = {},
                     label = {Text(stringResource(id = R.string.Subject)+ "*")},
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedSubject) },
@@ -441,16 +481,18 @@ fun BookInputForm(
                 )
 
 
-
                 ExposedDropdownMenu(
                     expanded = expandedSubject,
                     onDismissRequest = { expandedSubject = false }
                 ) {
-                    listSubjectToString.forEach { typeSubject ->
+                    listSubject.forEach { typeSubject ->
                         DropdownMenuItem(
-                            text = { Text( typeSubject )},
+                            text = {
+                                val subjectResId =stringSubjectToResourceId(typeSubject)
+                                Text(stringResource(subjectResId))
+                            },
                             onClick = {
-                                selectSubject = typeSubject
+                                //selectSubject = stringTypeToResourceId(typeSubject)
                                 onValueChange(bookDetails.copy(subject = typeSubject))
                                 expandedSubject = false
                             }
@@ -466,5 +508,47 @@ fun BookInputForm(
                 modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_medium))
             )
         }
+    }
+}
+
+@Composable
+fun stringSubjectToResourceId(text: String): Int {
+    val context = LocalContext.current
+    return when (text) {
+        "Information Technology" -> R.string.subject_information_technology
+        "Philosophy" -> R.string.subject_philosophy
+        "Foreign Language" -> R.string.subject_foreign_language
+        "Physical Education" -> R.string.subject_physical_education
+        "Pedagogy" -> R.string.subject_pedagogy
+        "Biotechnology" -> R.string.subject_biotechnology
+        "Economics" -> R.string.subject_economics
+        "Agriculture" -> R.string.subject_agriculture
+        "Fisheries" -> R.string.subject_fisheries
+        "Livestock" -> R.string.subject_livestock
+        "Veterinary Medicine" -> R.string.subject_veterinary_medicine
+        "Processing" -> R.string.subject_processing
+        "Environment and Resources" -> R.string.subject_environment_and_resources
+        "Tourism" -> R.string.subject_tourism
+        "Law" -> R.string.subject_law
+        "Construction" -> R.string.subject_construction
+        "Other" -> R.string.subject_other
+        else -> R.string.subject_other
+    }
+}
+
+@Composable
+fun stringTypeToResourceId(text: String): Int {
+    return when (text) {
+        "Printed Book" -> R.string.book_type_printed
+        "CD-ROM" -> R.string.book_type_cd_rom
+        "Printed Thesis" -> R.string.book_type_thesis_printed
+        "Digital Thesis" -> R.string.book_type_thesis_digital
+        "Printed Report" -> R.string.book_type_report_printed
+        "Digital Report" -> R.string.book_type_report_digital
+        "E-Book" -> R.string.book_type_ebook
+        "Printed Dissertation" -> R.string.book_type_dissertation_printed
+        "Digital Dissertation" -> R.string.book_type_dissertation_digital
+        "Thesis" -> R.string.book_type_thesis
+        else -> R.string.book_type_printed // Mặc định về loại sách in nếu không khớp
     }
 }

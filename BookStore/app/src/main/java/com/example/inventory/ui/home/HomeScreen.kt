@@ -64,6 +64,7 @@ import com.example.inventory.R
 import com.example.inventory.data.Author
 import com.example.inventory.data.Book
 import com.example.inventory.ui.AppViewModelProvider
+import com.example.inventory.ui.book.stringSubjectToResourceId
 import com.example.inventory.ui.navigation.NavigationDestination
 import com.example.inventory.ui.theme.InventoryTheme
 
@@ -150,7 +151,10 @@ fun HomeBookBodyLazyrow(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = stringResource(R.string.Subject)+ ": " + subject,
+                        text = stringResource(R.string.Subject)
+                                + ": "
+                                + stringResource(stringSubjectToResourceId(subject)
+                        ),
                         style = MaterialTheme.typography.titleMedium.copy(
                             color = MaterialTheme.colorScheme.primary
                         ),

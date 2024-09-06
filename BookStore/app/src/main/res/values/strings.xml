@@ -131,7 +131,7 @@
     <string name="book_type_dissertation_printed">Printed Dissertation</string>
     <string name="book_type_dissertation_digital">Digital Dissertation</string>
     <string name="book_type_thesis">Printed Dissertation</string>
-
+    <string name="empty_string"></string>
 
 
 

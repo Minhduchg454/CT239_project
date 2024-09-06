@@ -116,5 +116,5 @@
     <string name="book_type_dissertation_printed">Khóa luận in ấn</string>
     <string name="book_type_dissertation_digital">Luận án điện tử</string>
     <string name="book_type_thesis">Luận án in ấn</string>
-
+    <string name="empty_string"></string>
 </resources>
