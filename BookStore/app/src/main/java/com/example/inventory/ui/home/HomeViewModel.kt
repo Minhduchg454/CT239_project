@@ -1,5 +1,6 @@
 package com.example.inventory.ui.home
 
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.example.inventory.data.Author
 import com.example.inventory.data.AuthorsRepository
 import com.example.inventory.data.Book
 import com.example.inventory.data.BooksRepository
+import com.example.inventory.ui.search.getTypeName
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -76,20 +78,25 @@ class HomeViewModel (
 
 
 
-
-
-
-
-
-
     val searchUiState: StateFlow<BooksUiState> = searchQuery
         .flatMapLatest { query -> // Phản ứng với sự thay đổi của chuỗi tìm kiếm
+
             if (query.isEmpty()) {
                 flowOf(BooksUiState(emptyList())) // Khi chuỗi tìm kiếm trống, phát ra một HomeUiState với danh sách rỗng
             } else {
                 when (typeSearchQuery.value) {
                     "Name" -> booksRepository.searchBooksByName(query)
-                    //"Type" -> booksRepository.searchBooksByType((query))
+                    "Type" -> {
+                        // Chuyển đổi chuỗi query thành Int
+                        val subjectInt = query.toIntOrNull()
+                        if (subjectInt != null) {
+                            booksRepository.searchBooksBySubject(subjectInt)
+                        } else {
+                            // Nếu không thể chuyển đổi, trả về danh sách rỗng hoặc xử lý theo yêu cầu
+                            flowOf(emptyList())
+                        }
+                    }
+
                     //"Subject" -> booksRepository.searchBooksBySubject(query)
                     "Author" -> {
                                 authorsRepository.getIdByName(query)
@@ -109,6 +116,9 @@ class HomeViewModel (
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
             initialValue = BooksUiState(emptyList())
         )
+
+
+
     fun updateSearchQuery(newQuery: String) {
         _searchQuery.value = newQuery // Cập nhật chuỗi tìm kiếm
     }

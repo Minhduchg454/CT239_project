@@ -224,7 +224,6 @@ fun TypeSearch (
     val typeName = getTypeName(typeSelect, context)
 
 
-
     Column(
         modifier = modifier
             .fillMaxSize()
