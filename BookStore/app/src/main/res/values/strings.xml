@@ -132,6 +132,8 @@
     <string name="book_type_dissertation_digital">Digital Dissertation</string>
     <string name="book_type_thesis">Printed Dissertation</string>
     <string name="empty_string"></string>
+    <string name="select_an_options">Select an options</string>
+    <string name="default_all">All</string>
 
 
 

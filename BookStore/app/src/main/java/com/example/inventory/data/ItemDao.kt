@@ -56,6 +56,32 @@ interface BooksDao {
     fun getBookSavedState(bookId: Int): Flow<Boolean>
     //Để ui phản hồi theo sự thay đổi dữ liệu nên dùng flow
 
+
+    @Query("""
+        SELECT * FROM books 
+        WHERE 
+            (LOWER(name) LIKE '%' || LOWER(:query) || '%' OR :query IS NULL) AND 
+            (LOWER(type) LIKE '%' || LOWER(:type) || '%' OR :type IS NULL) AND
+            (LOWER(subject) LIKE '%' || LOWER(:subject) || '%' OR :subject IS NULL) AND
+            (authorId = :authorId OR :authorId IS NULL)
+        ORDER BY name ASC
+    """)
+    fun searchBooks(
+        query: String? = null,
+        type: String? = null,
+        subject: String? = null,
+        authorId: Int? = null
+    ): Flow<List<Book>>
+
+
+
+
+
+
+
+
+
+
 }
 
 @Dao

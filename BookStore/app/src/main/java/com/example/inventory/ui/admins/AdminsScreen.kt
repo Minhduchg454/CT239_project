@@ -97,8 +97,7 @@ fun AdminsScreen(
                 SearchBarHome(
                     searchQuery = searchQuery,
                     viewModel = viewModel,
-                    typeSearch = "Name"
-                )
+                    )
             }
         },
     ) { innerPadding ->

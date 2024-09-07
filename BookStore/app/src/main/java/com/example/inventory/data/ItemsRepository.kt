@@ -21,6 +21,13 @@ interface BooksRepository {
     suspend fun updateSaveToLibrary(bookId: Int, saveToLibrary: Boolean)
     fun getBookSavedState(bookId: Int): Flow<Boolean>
     fun getAllSaveBooks(): Flow<List<Book>>
+    fun searchBooks(
+        query: String? = null,
+        type: String? = null,
+        subject: String? = null,
+        authorId: Int? = null
+    ): Flow<List<Book>>
+
 }
 
 interface AuthorsRepository {

@@ -17,6 +17,13 @@ class OfflineBookRepository (private val booksDao: BooksDao) : BooksRepository {
     override suspend fun updateSaveToLibrary(bookId: Int, saveToLibrary: Boolean) = booksDao.updateSaveToLibrary(bookId, saveToLibrary)
     override fun getBookSavedState(bookId: Int): Flow<Boolean> = booksDao.getBookSavedState(bookId)
     override fun getAllSaveBooks(): Flow<List<Book>> = booksDao.getAllSaveBooks()
+    override fun searchBooks(
+        query: String?,
+        type: String?,
+        subject: String?,
+        authorId: Int?
+    ): Flow<List<Book>> = booksDao.searchBooks(query,type,subject,authorId)
+
 }
 
 

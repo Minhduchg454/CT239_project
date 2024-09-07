@@ -104,11 +104,9 @@ fun HomeScreen(
                     canNavigateBack = false,
                     scrollBehavior = scrollBehavior
                 )
-                //HorizontalDivider()
             }
         },
     ) { innerPadding ->
-
         HomeBookBodyLazyrow(
             bookList = bookUiState.bookList,
             authorList = authorUiState.authorList,
@@ -138,7 +136,7 @@ fun HomeBookBodyLazyrow(
             .fillMaxSize(),
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)) //Khoang cach tung item
-    ) {
+        ) {
         booksBySubject.forEach { (subject, books) ->
             item {
                 Row (
@@ -217,6 +215,7 @@ fun HomeBookBodyLazyColumn(
         verticalArrangement = Arrangement.Top,
         modifier = modifier
             .padding(
+                top = dimensionResource(id = R.dimen.padding_small),
                 start = dimensionResource(id = R.dimen.padding_small),
                 end = dimensionResource(id = R.dimen.padding_small),
             ),

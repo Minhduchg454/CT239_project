@@ -117,4 +117,7 @@
     <string name="book_type_dissertation_digital">Luận án điện tử</string>
     <string name="book_type_thesis">Luận án in ấn</string>
     <string name="empty_string"></string>
+    <string name="select_an_options">Chọn một tùy chọn</string>
+    <string name="default_all">Tất cả</string>
+
 </resources>

@@ -258,6 +258,7 @@ fun BookInputForm(
 
     */
 
+    /*
     val listBookType = listOf(
         "Printed Book",
         "CD-ROM",
@@ -289,7 +290,10 @@ fun BookInputForm(
         "Law",
         "Construction",
         "Other"
-    )
+    )*/
+
+    val listSubject = SubjectData.listSubject
+    val listBookType = BookTypeData.listBookType
 
 
 
@@ -551,4 +555,44 @@ fun stringTypeToResourceId(text: String): Int {
         "Thesis" -> R.string.book_type_thesis
         else -> R.string.book_type_printed // Mặc định về loại sách in nếu không khớp
     }
+}
+
+
+
+object SubjectData {
+    val listSubject = listOf(
+        "Information Technology",
+        "Philosophy",
+        "Foreign Language",
+        "Physical Education",
+        "Pedagogy",
+        "Biotechnology",
+        "Economics",
+        "Agriculture",
+        "Fisheries",
+        "Livestock",
+        "Veterinary Medicine",
+        "Processing",
+        "Environment and Resources",
+        "Tourism",
+        "Law",
+        "Construction",
+        "Other"
+    )
+}
+
+
+object BookTypeData {
+    val listBookType = listOf(
+        "Printed Book",
+        "CD-ROM",
+        "Printed Thesis",
+        "Digital Thesis",
+        "Printed Report",
+        "Digital Report",
+        "E-Book",
+        "Printed Dissertation",
+        "Digital Dissertation",
+        "Thesis"
+    )
 }
