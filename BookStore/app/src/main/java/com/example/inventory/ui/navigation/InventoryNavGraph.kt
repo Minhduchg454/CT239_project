@@ -154,6 +154,10 @@ fun InventoryNavHost(
                 onUpdateDeleteAuthorClick = {
                     navController.navigate(ListAuthorScreenDestination.route)
                 }
+                ,
+                onAddAuthorClick = {
+                    navController.navigate(AuthorEntryDestination.route)
+                }
             )
         }
 
@@ -195,7 +199,7 @@ fun InventoryNavHost(
         //Add author
         composable(route = AuthorEntryDestination.route,){
             AddAuthorScreen(
-                onNavigateUp = { navController.navigate(BookEntryDestination.route) }
+                onNavigateUp = {navController.navigateUp()}
             )
         }
 

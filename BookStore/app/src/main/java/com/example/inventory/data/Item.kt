@@ -16,9 +16,6 @@ data class Author(
     val name: String
 )
 
-
-
-
 @Entity(
     tableName = "books",
     foreignKeys = [

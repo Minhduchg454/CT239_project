@@ -50,7 +50,8 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
     onUpdateDeleteBookClick : () -> Unit,
     onAddBookClick : () -> Unit,
-    onUpdateDeleteAuthorClick: () -> Unit
+    onUpdateDeleteAuthorClick: () -> Unit,
+    onAddAuthorClick: () -> Unit,
 ){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
@@ -69,7 +70,8 @@ fun SettingsScreen(
             modifier = Modifier.fillMaxSize(),
             onUpdateDeleteBookClick = onUpdateDeleteBookClick,
             onAddBookClick = onAddBookClick,
-            onUpdateDeleteAuthorClick = onUpdateDeleteAuthorClick
+            onUpdateDeleteAuthorClick = onUpdateDeleteAuthorClick,
+            onAddAuthorClick = onAddAuthorClick,
         )
     }
 }
@@ -80,7 +82,8 @@ fun SettingsBody (
     contentPadding: PaddingValues,
     onUpdateDeleteBookClick: () -> Unit,
     onAddBookClick: () -> Unit,
-    onUpdateDeleteAuthorClick: () -> Unit
+    onUpdateDeleteAuthorClick: () -> Unit,
+    onAddAuthorClick: () -> Unit,
 ){
     LazyColumn (
         contentPadding = contentPadding,
@@ -112,7 +115,8 @@ fun SettingsBody (
                     ),
                 onUpdateDeleteBookClick = onUpdateDeleteBookClick,
                 onAddBookClick = onAddBookClick,
-                onUpdateDeleteAuthorClick = onUpdateDeleteAuthorClick
+                onUpdateDeleteAuthorClick = onUpdateDeleteAuthorClick,
+                onAddAuthorClick = onAddAuthorClick,
             )
         }
     }
@@ -197,7 +201,8 @@ fun AdminArea(
     modifier: Modifier = Modifier,
     onUpdateDeleteBookClick: () -> Unit,
     onAddBookClick: () -> Unit,
-    onUpdateDeleteAuthorClick: () -> Unit
+    onUpdateDeleteAuthorClick: () -> Unit,
+    onAddAuthorClick: () -> Unit
 ) {
     Card(
         modifier = modifier,
@@ -254,6 +259,22 @@ fun AdminArea(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clickable { onAddAuthorClick() }
+            ){
+                Text(
+                    text = stringResource(id = R.string.Add_new_Author),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .wrapContentWidth(),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            HorizontalDivider()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
                     .clickable { onUpdateDeleteAuthorClick() }
             ){
                 Text(
@@ -266,8 +287,6 @@ fun AdminArea(
                 )
             }
 
-
-
         }
     }
 
@@ -275,18 +294,3 @@ fun AdminArea(
 
 
 
-
-
-
-
-
-/*
-@Preview(showBackground = true)
-@Composable
-fun InfoScreenPreview() {
-    InventoryTheme {
-        SettingsScreen()
-    }
-}
-
- */

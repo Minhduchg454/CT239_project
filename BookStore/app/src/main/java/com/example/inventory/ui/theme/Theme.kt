@@ -246,20 +246,6 @@ private val highContrastDarkColorScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDarkHighContrast,
 )
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @Composable
 fun InventoryTheme(
     darkTheme: Boolean = isSystemInDarkTheme(), //xem he thong co su dung che do toi hay khong

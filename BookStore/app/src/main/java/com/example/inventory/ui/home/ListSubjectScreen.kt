@@ -15,10 +15,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
 import com.example.inventory.ui.AppViewModelProvider
+import com.example.inventory.ui.book.stringSubjectToResourceId
 import com.example.inventory.ui.navigation.NavigationDestination
 
 object ListSubjectScreen : NavigationDestination {
@@ -51,7 +53,7 @@ fun ListSubjectScreen(
         topBar = { //Thanh bar tren cung ~ tieu de
             Column {
                 InventoryTopAppBar(
-                    title = viewModel.subjectKey,
+                    title = stringResource(stringSubjectToResourceId(viewModel.subjectKey)) ,
                     canNavigateBack = true,
                     navigateUp = navigateBack,
                     scrollBehavior = scrollBehavior

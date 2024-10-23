@@ -1,6 +1,6 @@
 <resources>
     <!-- Vietnamese Version -->
-    <string name="app_name">Cửa hàng sách</string>
+    <string name="app_name">Thư viện LRC</string>
     <string name="attention">Chú ý</string>
     <string name="back_button">Quay lại</string>
     <string name="cancel_button">Hủy</string>
