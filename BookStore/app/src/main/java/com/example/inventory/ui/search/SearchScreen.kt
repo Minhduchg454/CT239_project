@@ -117,7 +117,7 @@ fun SearchScreen(
     val searchUiState by viewModel.searchUiState.collectAsState()
     val authorUiState by viewModel.AuthorsUiState.collectAsState()
 
-    //Danh sach lua chon
+    //Danh sach lua chon, hien thi lua chon cua nguoi dung
     val searchQuery by viewModel.searchQuery.collectAsState()
     val selectType by viewModel.selectType.collectAsState()
     val selectAuthor by viewModel.selectAuthor.collectAsState()
@@ -125,17 +125,17 @@ fun SearchScreen(
 
 
     //Hien thi kieu chon
-    val isTypeSearchVision = searchQuery.isEmpty() //khi nao by khi nao =
+    val isTypeSearchVision = searchQuery.isEmpty()
 
     //Thiet lap cuon cho top bar
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-
-
     //Danh sach tac gia
     val listAuthors = authorUiState.authorList.map { it.name }
-    val listAuthorWithAll= listOf("All") + listAuthors
 
+    val listAuthorWithAll= listOf("All") + listAuthors
+    val listSubjectWithAll = listOf("All") + SubjectData.listSubject
+    val listBookTypeWithAll = listOf("All") + BookTypeData.listBookType
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -162,6 +162,8 @@ fun SearchScreen(
                     onSelectSubject = {viewModel.updateSelectSubject(it)},
                     onSelectType = { viewModel.updateSelectType(it) },
                     listAuthor = listAuthorWithAll,
+                    listSubject = listSubjectWithAll,
+                    listBookType = listBookTypeWithAll,
                     modifier = modifier.padding(innerPadding)
                 )
             }else{
@@ -228,14 +230,13 @@ fun TypeSearchChip (
     authorSelect: String,
     subjectSelect: String,
     listAuthor: List<String>,
+    listSubject: List<String>,
+    listBookType: List<String>,
     onSelectAuthor: (String) -> Unit,
     onSelectSubject: (String) -> Unit,
     onSelectType: (String) -> Unit,
     modifier: Modifier = Modifier
 ){
-    val listSubject = listOf("All") + SubjectData.listSubject
-    val listBookType = listOf("All") + BookTypeData.listBookType
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -309,7 +310,7 @@ fun AssistFilterListChip (
 
 
     FilterChip(
-        selected = (selectItem!="" && selectItem != "All"),
+        selected = (selectItem!="" && selectItem != "All"), //Neu duoc chon thi chip sang mau
         onClick = {
             showBottomSheet = true
                   },
@@ -319,6 +320,7 @@ fun AssistFilterListChip (
                 if (label == stringResource(id = R.string.Author_name)){
                     Text(selectItem)
                 }else{
+                    //Chuyen doi ngon ngu
                     Text(stringResource( resStringToSearchText( selectItem ) ) )
                 }
 
@@ -377,7 +379,6 @@ fun BottomSheetContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            //.padding(dimensionResource(R.dimen.padding_medium)),
         ,verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_tiny)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -396,7 +397,6 @@ fun BottomSheetContent(
         // Divider giữa tiêu đề và nội dung
         HorizontalDivider()
         // Phần nội dung bao quanh một hình có đường biên
-
         Card(
             modifier = Modifier
                 .width(400.dp)

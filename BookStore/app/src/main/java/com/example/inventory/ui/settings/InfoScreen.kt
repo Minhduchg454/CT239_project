@@ -165,6 +165,8 @@ fun InfoAppCard(
                 overflow = TextOverflow.Ellipsis
             )
             HorizontalDivider()
+            
+
             Text(
                 text = stringResource(id = R.string.Developer),
                 style = MaterialTheme.typography.bodyMedium,

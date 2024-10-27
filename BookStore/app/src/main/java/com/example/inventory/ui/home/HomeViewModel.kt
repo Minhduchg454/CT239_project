@@ -55,8 +55,6 @@ class HomeViewModel (
         + viewModelScope đảm bảo rằng luồng dữ liệu này sẽ tự động bị hủy khi ViewModel bị hủy, giúp tránh rò rỉ bộ nhớ.
 
 
-
-
     ViewModel giúp cho lưu trữ các giá trị của giao diện người dùng đảm bảo không mất đi khi thay đổi cấu hình,trong vòng đời phần mềm
 
     MutableStateFlow: Đây là một loại biến trạng thái có khả năng thay đổi giá trị của nó
@@ -71,7 +69,6 @@ class HomeViewModel (
 
     private val _searchQuery = MutableStateFlow("") //Bien nhan gia tri khi co thay doi
     val searchQuery: StateFlow<String> =_searchQuery //Bien truyen toi cac thanh phan ui va chi cho phep doc khong thay doi gia tri
-
 
     private val _selectType = MutableStateFlow("")
     val selectType: StateFlow<String> = _selectType
@@ -89,18 +86,17 @@ class HomeViewModel (
 
    //Tu dong khoi tao khi cap nhat ten tac gia
     init {
+        //Tao luong coroutine moi
         viewModelScope.launch {
             selectAuthor
                 .flatMapLatest { authorName ->                      //lang nghe cac thay doi cua selectAuthor (stateFlow), khi thay doi thi goi ham thuc hien
                     if (authorName.isNotEmpty()) {
                         authorsRepository.getIdByName(authorName) //tra ve flow chua ten tac gia
                     } else {
-
                         flowOf(null)        // Khi tên tác giả trống, phát ra giá trị null
                     }
                 }
-                .filterNotNull()                // Loại bỏ giá trị null, neu co null thi khong xu li tiep theo
-                .collect { authorId ->          //Gia tri nhan duoc khong phai null va tien hanh rang -- Lay ket qua tu flow va xu li no
+                .collect { authorId ->          //Lay ket qua tu flow va xu li no
                     _selectIdAuthor.value = authorId // Cập nhật giá trị ID tác giả
                 }
         }
@@ -121,8 +117,6 @@ class HomeViewModel (
     fun updateSelectSubject(newSubject: String) {
         _selectSubject.value = newSubject
     }
-
-
 
     private val searchParametersFlow = combine(
         searchQuery,
