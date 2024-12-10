@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.inventory.data.Author
+import com.example.inventory.data.AUTHOR
 import com.example.inventory.data.AuthorsRepository
 
 
@@ -51,21 +51,21 @@ data class AuthorDetails(
 
 
 //AuthorDetails to Author
-fun AuthorDetails.toAuthor(): Author = Author(
-    id = id,
-    name = name,
+fun AuthorDetails.toAuthor(): AUTHOR = AUTHOR(
+    AUTHOR_Id = id,
+    AUTHOR_Name = name,
 )
 
 
 //Author to AuthorDetails
-fun Author.toAuthorDetails(): AuthorDetails = AuthorDetails(
-   id = id,
-   name = name,
+fun AUTHOR.toAuthorDetails(): AuthorDetails = AuthorDetails(
+   id = AUTHOR_Id,
+   name = AUTHOR_Name,
 )
 
 
 //Author to AuthorUiState
-fun Author.toAuthorUiState(isEntryValid: Boolean = false): AuthorUiState = AuthorUiState(
+fun AUTHOR.toAuthorUiState(isEntryValid: Boolean = false): AuthorUiState = AuthorUiState(
     authorDetails = this.toAuthorDetails(),
     isEntryValid = isEntryValid
 )

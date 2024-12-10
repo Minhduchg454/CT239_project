@@ -48,8 +48,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
-import com.example.inventory.data.Author
-import com.example.inventory.data.Book
+import com.example.inventory.data.AUTHOR
+import com.example.inventory.data.BOOK
+import com.example.inventory.data.BOOK_TYPE
+import com.example.inventory.data.SUBJECT
 import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.admins.AdminsScreenDestination
 import com.example.inventory.ui.home.HomeDestination
@@ -78,6 +80,8 @@ fun BookDetailsScreen(
 ) {
     val bookDetailsuiState = viewModel.bookDetailsUiState.collectAsState() //Bien chua du lieu tu viewmodel
     val authorUiState by viewModel.AuthorsUiState.collectAsState()
+    val bookTypeUiState by viewModel.BookTypesUiState.collectAsState()
+    val subjectUiState by viewModel.SubjectsUiState.collectAsState()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val bookId = navBackStackEntry?.arguments?.getInt(BookDetailsDestination.bookIdArg) ?: return
@@ -123,6 +127,8 @@ fun BookDetailsScreen(
         BookDetailsBody(
             bookDetailsUiState = bookDetailsuiState.value,
             authorList = authorUiState.authorList,
+            subjectList = subjectUiState.subjectList,
+            bookTypeList = bookTypeUiState.bookTypeList,
             navController = navController,
             onSaveToLibrary = {
                 viewModel.saveToLibrary() },
@@ -151,7 +157,9 @@ fun BookDetailsScreen(
 private fun BookDetailsBody(
     modifier: Modifier = Modifier,
     bookDetailsUiState: BookDetailsUiState,
-    authorList: List<Author>,
+    authorList: List<AUTHOR>,
+    subjectList: List<SUBJECT>,
+    bookTypeList: List<BOOK_TYPE>,
     navController: NavController,
     onSaveToLibrary: () -> Unit,
     onRemoveFromLibrary: () -> Unit = {},
@@ -170,23 +178,8 @@ private fun BookDetailsBody(
     ) {
         var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
 
-        /*
-        C1
-        val isBookSave by viewModel.isBooKSave.collectAsState() //chuyen doi ket qua tu flow sang state de ui cap nhat
-        var enabledSaveBook2 by rememberSaveable { mutableStateOf(!isBookSave) }
-
-        LaunchedEffect(isBookSave) {
-            enabledSaveBook2 = !isBookSave
-        }
-
-        C2
-        val isBookSave by viewModel.isBooKSave.collectAsState()
-        var enabledSaveBook2 = !isBookSave
-        */
 
 
-
-        //C3
         var enabledSaveBook by rememberSaveable { mutableStateOf(!bookDetailsUiState.bookDetails.saveToLibrary) }
 
         // Dam bao cap nhat du lieu moi nhat khi co thay doi ve du lieu do
@@ -200,6 +193,8 @@ private fun BookDetailsBody(
         BookDetailsCard(
             book = bookDetailsUiState.bookDetails.toBook(),
             authorList = authorList,
+            subjectList = subjectList,
+            bookTypeList = bookTypeList,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -266,8 +261,10 @@ private fun BookDetailsBody(
 
 @Composable
 fun BookDetailsCard(
-    book: Book,
-    authorList: List<Author>,
+    book: BOOK,
+    authorList: List<AUTHOR>,
+    subjectList: List<SUBJECT>,
+    bookTypeList: List<BOOK_TYPE>,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -282,11 +279,21 @@ fun BookDetailsCard(
 
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            val authorName = authorList.find { it.id == book.authorId }?.name ?: "Unknown Author"
+            val authorName = authorList.find { it.AUTHOR_Id == book.AUTHOR_Id }?.AUTHOR_Name ?: "Unknown Author"
+            val subjectName = subjectList.find { it.SUBJECT_Id == book.SUBJECT_Id }?.SUBJECT_Name ?: "Unknown Subject"
+            val typeName = bookTypeList.find { it.BT_Id == book.BT_Id } ?.BT_Name ?: "Unknown Type"
 
             BookDetailsRow(
                 labelResID = R.string.Book_name,
-                bookDetail = book.name,
+                bookDetail = book.BOOK_Name,
+                modifier = Modifier.padding(
+                    horizontal = paddingRow
+                )
+            )
+
+            BookDetailsRow(
+                labelResID = R.string.Book_type,
+                bookDetail = stringResource(stringTypeToResourceId(typeName)),
                 modifier = Modifier.padding(
                     horizontal = paddingRow
                 )
@@ -300,17 +307,11 @@ fun BookDetailsCard(
                 )
             )
 
-            BookDetailsRow(
-                labelResID = R.string.Book_type,
-                bookDetail = stringResource(stringTypeToResourceId(book.type)),
-                modifier = Modifier.padding(
-                    horizontal = paddingRow
-                )
-            )
+
 
             BookDetailsRow(
                 labelResID = R.string.Publication_info,
-                bookDetail = book.publicationInfo,
+                bookDetail = book.Book_PublicationInfo,
                 modifier = Modifier.padding(
                     horizontal = paddingRow
                 )
@@ -318,7 +319,17 @@ fun BookDetailsCard(
 
             BookDetailsRow(
                 labelResID = R.string.Shelf_number,
-                bookDetail = book.shelfNumber,
+                bookDetail = book.BOOK_ShelfNumber,
+                modifier = Modifier.padding(
+                    horizontal = paddingRow
+                )
+            )
+
+
+
+            BookDetailsRow(
+                labelResID = R.string.Physical_description,
+                bookDetail = book.BOOK_PhysicalDescription,
                 modifier = Modifier.padding(
                     horizontal = paddingRow
                 )
@@ -326,15 +337,15 @@ fun BookDetailsCard(
 
             BookDetailsRow(
                 labelResID = R.string.Subject,
-                bookDetail = stringResource(stringSubjectToResourceId(book.subject)),
+                bookDetail = stringResource(stringSubjectToResourceId(subjectName)),
                 modifier = Modifier.padding(
                     horizontal = paddingRow
                 )
             )
 
             BookDetailsRow(
-                labelResID = R.string.Physical_description,
-                bookDetail = book.physicalDescription,
+                labelResID = R.string.MFN,
+                bookDetail = book.Book_MFN.toString(),
                 modifier = Modifier.padding(
                     horizontal = paddingRow
                 )
@@ -355,7 +366,6 @@ fun BookDetailsRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(dimensionResource(id = R.dimen.padding_small)),
-        //horizontalArrangement = Arrangement.SpaceBetween // Căn chỉnh các thành phần
     ) {
         Text(
             stringResource(labelResID),
@@ -408,21 +418,3 @@ fun DeleteConfirmationDialog(
 
 
 
-/*
-
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ItemDetailsScreenBodyPreview() {
-    InventoryTheme {
-        ItemDetailsBody(
-            ItemDetailsUiState(
-                outOfStock = true,
-                itemDetails = ItemDetails(1, "Pen", "$100", "10")
-            ),
-            onSellItem = {},
-            onDelete = {}
-        )
-    }
-}
-*/

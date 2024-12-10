@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
-import com.example.inventory.data.Author
+import com.example.inventory.data.AUTHOR
 import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.home.HomeBookBodyLazyrow
 import com.example.inventory.ui.navigation.NavigationDestination
@@ -89,7 +89,7 @@ fun ListAuthorScreen (
 
 @Composable
 fun AuthorBody(
-    authorList: List<Author>,
+    authorList: List<AUTHOR>,
     modifier: Modifier = Modifier,
     onItemClick: (Int) -> Unit,
     contentPadding: PaddingValues
@@ -116,14 +116,14 @@ fun AuthorBody(
                 modifier = modifier.fillMaxSize(),
                 contentPadding = contentPadding
             ){
-                items(items = authorList, key = {it.id}){author ->
+                items(items = authorList, key = {it.AUTHOR_Id}){author ->
                     CardAuthor(
                         author = author,
                         modifier = Modifier
                             .padding(dimensionResource(id = R.dimen.padding_small)) //padding xung quanh moi card
                             .fillMaxWidth()
                             .height(80.dp)
-                            .clickable { onItemClick(author.id) }
+                            .clickable { onItemClick(author.AUTHOR_Id) }
                     )
                 }
             }
@@ -135,7 +135,7 @@ fun AuthorBody(
 
 @Composable
 fun CardAuthor (
-    author: Author,
+    author: AUTHOR,
     modifier: Modifier = Modifier
 ){
 
@@ -152,9 +152,8 @@ fun CardAuthor (
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = author.name,
+                    text = author.AUTHOR_Name,
                     style = MaterialTheme.typography.bodyLarge,
-                    //textAlign = TextAlign.Center
                 )
             }
 

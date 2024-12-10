@@ -2,96 +2,67 @@ package com.example.inventory.data
 
 import kotlinx.coroutines.flow.Flow
 
+/**
+    *4
+    *Cai dat cac phuong thuc truy xuat du lieu tu database
+ */
 
-class OfflineBookRepository (private val booksDao: BooksDao) : BooksRepository {
-    override fun getAllBooksStream(): Flow<List<Book>> = booksDao.getAllBooks()
-    override fun getBookStream(id: Int): Flow<Book?> = booksDao.getBookById(id)
-    override suspend fun insertBook(book: Book) = booksDao.insert(book)
-    override suspend fun deleteBook(book: Book) = booksDao.delete(book)
-    override suspend fun updateBook(book: Book) = booksDao.update(book)
-    override fun searchBooksByName(name: String): Flow<List<Book>> = booksDao.searchBooksByName(name)
-    override fun searchBooksBySubject(subject: String): Flow<List<Book>> = booksDao.searchBooksBySubject(subject)
-    override fun searchBooksByAuthor(authorId: Int): Flow<List<Book>> = booksDao.searchBooksByAuthor(authorId)
-    override fun searchBooksByType(type: String): Flow<List<Book>> = booksDao.searchBooksByType(type)
+
+class OfflineBookRepository(private val booksDao: BooksDao) : BooksRepository {
+    override fun getAllBooksStream(): Flow<List<BOOK>> = booksDao.getAllBooks()
+    override fun getBookStream(id: Int): Flow<BOOK?> = booksDao.getBookById(id)
+    override suspend fun insertBook(book: BOOK) = booksDao.insert(book)
+    override suspend fun deleteBook(book: BOOK) = booksDao.delete(book)
+    override suspend fun updateBook(book: BOOK) = booksDao.update(book)
+    override fun searchBooksByName(name: String): Flow<List<BOOK>> = booksDao.searchBooksByName(name)
+    override fun searchBooksBySubject(subjectId: Int): Flow<List<BOOK>> = booksDao.searchBooksBySubject(subjectId)
+    override fun searchBooksByAuthor(authorId: Int): Flow<List<BOOK>> = booksDao.searchBooksByAuthor(authorId)
+    override fun searchBooksByType(typeId: Int): Flow<List<BOOK>> = booksDao.searchBooksByType(typeId)
 
     override suspend fun updateSaveToLibrary(bookId: Int, saveToLibrary: Boolean) = booksDao.updateSaveToLibrary(bookId, saveToLibrary)
     override fun getBookSavedState(bookId: Int): Flow<Boolean> = booksDao.getBookSavedState(bookId)
-    override fun getAllSaveBooks(): Flow<List<Book>> = booksDao.getAllSaveBooks()
+    override fun getAllSaveBooks(): Flow<List<BOOK>> = booksDao.getAllSaveBooks()
     override fun searchBooks(
         query: String?,
-        type: String?,
-        subject: String?,
+        typeId: Int?,
+        subjectId: Int?,
         authorId: Int?
-    ): Flow<List<Book>> = booksDao.searchBooks(query,type,subject,authorId)
-
+    ): Flow<List<BOOK>> = booksDao.searchBooks(query, typeId, subjectId, authorId)
 }
 
-
-class OfflineAuthorRepository (private val authorsDao: AuthorDao): AuthorsRepository{
-    override fun getAllAuthorsStream(): Flow<List<Author>> = authorsDao.getAllAuthors()
-    override fun getAuthorStream(id: Int): Flow<Author> = authorsDao.searchAuthorById(id)
-    override suspend fun insertAuthor(author: Author) = authorsDao.insert(author)
-    override suspend fun deleteAuthor(author: Author) = authorsDao.delete(author)
-    override suspend fun updateAuthor(author: Author) = authorsDao.update(author)
-    override fun searchAuthorsByName(name: String): Flow<List<Author>> = authorsDao.searchAuthorByName(name)
+class OfflineAuthorRepository(private val authorsDao: AuthorDao) : AuthorsRepository {
+    override fun getAllAuthorsStream(): Flow<List<AUTHOR>> = authorsDao.getAllAuthors()
+    override fun getAuthorStream(id: Int): Flow<AUTHOR?> = authorsDao.searchAuthorById(id)
+    override suspend fun insertAuthor(author: AUTHOR) = authorsDao.insert(author)
+    override suspend fun deleteAuthor(author: AUTHOR) = authorsDao.delete(author)
+    override suspend fun updateAuthor(author: AUTHOR) = authorsDao.update(author)
+    override fun searchAuthorsByName(name: String): Flow<List<AUTHOR>> = authorsDao.searchAuthorByName(name)
     override fun getIdByName(name: String): Flow<Int> = authorsDao.getIdByName(name)
-
 }
 
-
-
-
-
-/*
-interface PaymentMethod {
-    fun pay (amount : Double): String
-}
-
-class CreditCardPayment : PaymentMethod {
-    override fun pay (amount: Double): String {
-        return "Paid $amount with CreditCard"
-    }
-}
-
-class BankTransferPayment : PaymentMethod {
-    override fun pay (amount: Double): String {
-        return "Paid $amount with Bank Transfer"
-    }
-}
-
-
-class CheckOut (private val paymentMethod: PaymentMethod){
-    fun processPayment (amount: Double){
-        println (paymentMethod.pay(amount))
-    }
-}
-
-
-fun main() {
-    val paymentMethod: PaymentMethod = CreditCardPayment()
-    val checkOut = CheckOut(paymentMethod)
-    checkOut.processPayment(100.00)
-
-}
-
-
-3. Tại sao có thể gán đối tượng lớp con cho biến kiểu interface?
-    Kotlin cho phép bạn gán một đối tượng của bất kỳ lớp nào cài đặt (hoặc kế thừa) từ một interface
-        hoặc lớp cha cho một biến có kiểu của interface hoặc lớp cha đó.
-
-    Điều này là do:
-
-    Đa hình (Polymorphism): Một biến có kiểu của interface hoặc lớp cha có thể chứa bất kỳ đối tượng
-    nào cài đặt (hoặc kế thừa) từ nó.
-
-    Điều này cho phép bạn viết mã linh hoạt và tổng quát hơn, vì bạn có thể thay đổi kiểu đối tượng
-        được gán cho biến mà không cần thay đổi mã nơi biến đó được sử dụng.
-
-4. Không cần từ khóa new
-    Trong Kotlin, bạn không cần sử dụng từ khóa new khi khởi tạo
-    một đối tượng như trong Java. Thay vào đó, bạn chỉ cần gọi constructor của lớp:
-
-
-
+/**
+ * Repository for [SUBJECT] providing methods to insert, update, delete, and retrieve subjects.
  */
+class OfflineSubjectRepository(private val subjectDao: SubjectDao) : SubjectsRepository {
+    override fun getAllSubjectsStream(): Flow<List<SUBJECT>> = subjectDao.getAllSubjects()
+    override fun getSubjectStream(id: Int): Flow<SUBJECT?> = subjectDao.getSubjectById(id)
+    override suspend fun insertSubject(subject: SUBJECT) = subjectDao.insert(subject)
+    override suspend fun deleteSubject(subject: SUBJECT) = subjectDao.delete(subject)
+    override suspend fun updateSubject(subject: SUBJECT) = subjectDao.update(subject)
+    override fun searchSubjectsByName(name: String): Flow<List<SUBJECT>> = subjectDao.searchSubjectByName(name)
+    override fun getIdByName(name: String): Flow<Int> = subjectDao.getIdByName(name)
+}
+
+/**
+ * Repository for [BOOK_TYPE] providing methods to insert, update, delete, and retrieve book types.
+ */
+class OfflineBookTypeRepository(private val bookTypeDao: BookTypeDao) : BookTypesRepository {
+    override fun getAllBookTypesStream(): Flow<List<BOOK_TYPE>> = bookTypeDao.getAllBookTypes()
+    override fun getBookTypeStream(id: Int): Flow<BOOK_TYPE?> = bookTypeDao.getBookTypeById(id)
+    override suspend fun insertBookType(bookType: BOOK_TYPE) = bookTypeDao.insert(bookType)
+    override suspend fun deleteBookType(bookType: BOOK_TYPE) = bookTypeDao.delete(bookType)
+    override suspend fun updateBookType(bookType: BOOK_TYPE) = bookTypeDao.update(bookType)
+    override fun searchBookTypesByName(name: String): Flow<List<BOOK_TYPE>> = bookTypeDao.searchBookTypeByName(name)
+    override fun getIdByName(name: String): Flow<Int> = bookTypeDao.getIdByName(name)
+}
 

@@ -42,8 +42,12 @@ fun ListSubjectScreen(
     viewModel: ListSubjectViewModel = viewModel (factory = AppViewModelProvider.Factory)
 ) {
 
-    val subjectUiState by viewModel.subjectUiState.collectAsState()
+    val subjectForBookUiState by viewModel.subjectForBooktUiState.collectAsState()
     val authorUiState by viewModel.authorsUiState.collectAsState()
+    val subjectsUiState by viewModel.subjectsUiState.collectAsState()
+
+    val subjectKey = viewModel.subjectKey.toInt()
+    val subjectName = subjectsUiState.subjectList.find {it.SUBJECT_Id == subjectKey}?.SUBJECT_Name?:"Unknown"
 
     //Thiet lap cuon cho top bar
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -53,7 +57,7 @@ fun ListSubjectScreen(
         topBar = { //Thanh bar tren cung ~ tieu de
             Column {
                 InventoryTopAppBar(
-                    title = stringResource(stringSubjectToResourceId(viewModel.subjectKey)) ,
+                    title = stringResource(stringSubjectToResourceId(subjectName)),
                     canNavigateBack = true,
                     navigateUp = navigateBack,
                     scrollBehavior = scrollBehavior
@@ -62,7 +66,7 @@ fun ListSubjectScreen(
         },
     ) { innerPadding ->
         HomeBookBodyLazyColumn(
-            bookList = subjectUiState.bookList,
+            bookList = subjectForBookUiState.bookList,
             authorList = authorUiState.authorList,
             onItemClick = navigateToItemUpdate,
             modifier = modifier

@@ -249,8 +249,6 @@ private val highContrastDarkColorScheme = darkColorScheme(
 @Composable
 fun InventoryTheme(
     darkTheme: Boolean = isSystemInDarkTheme(), //xem he thong co su dung che do toi hay khong
-    // Dynamic color is available on Android 12+
-    // Dynamic color in this app is turned off for learning purposes
     dynamicColor: Boolean = false, //thay doi mau sac dua vao hinh nen nguoi dung
     content: @Composable () -> Unit
 ) {

@@ -6,7 +6,7 @@
     <string name="cancel_button">Cancel</string>
     <string name="delete">Delete</string>
     <string name="delete_question">Are you sure you want to delete?</string>
-    <string name="no_item_description">Oops!\nNo book in the app.\n</string>
+    <string name="no_item_description">\nNo book in the system</string>
     <string name="no_author_description">Oops!\nNo author in the app.\n</string>
     <string name="edit_item_title">Edit Item</string>
     <string name="item">Item</string>
@@ -73,11 +73,12 @@
     <string name="Options">Options</string>
     <string name="Author_name">Author Name</string>
     <string name="Book_name">Book Name</string>
-    <string name="Book_type">Book Type</string>
+    <string name="Book_type">Database Type</string>
     <string name="By">by</string>
     <string name="Publication_info">Publication Info</string>
     <string name="Physical_description">Physical Description</string>
     <string name="Shelf_number">Shelf Number</string>
+    <string name="MFN">MFN</string>
 
     <string name="Check">Check</string>
     <string name="List_authors">List authors</string>
@@ -122,6 +123,17 @@
     <string name="default_all">All</string>
 
 
+    <string name="enter_password">Enter Password</string>
+    <string name="wrong_password">Incorrect password, please try again</string>
+    <string name="submit_button">Submit</string>
+    <string name= "access_admin">Access Admin Area</string>
+
+    <string name="save_book_description">Save the books you want to borrow</string>
+    <string name="explore_button">Explore</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
+    <string name="try_other_keywords">Try other keywords</string>
+    <string name="Found_books">Number of books found: </string>
 
 
 

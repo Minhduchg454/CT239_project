@@ -43,8 +43,11 @@ class BookEditViewModel (
      */
     private fun validateInput(uiState: BookDetails = bookEditUiState.bookDetails): Boolean {
         return with(uiState) {
-            name.isNotBlank() && type.isNotBlank() && publicationInfo.isNotBlank()
-                    && shelfNumber.isNotBlank() && subject.isNotBlank() && physicalDescription.isNotBlank()
+            name.isNotBlank() && publicationInfo.isNotBlank() && shelfNumber.isNotBlank()
+                    && physicalDescription.isNotBlank() && MFN > 0
+                    && type != null && type > 0 // Check for a valid selection from list
+                    && authorId != null && authorId > 0 // Check for a valid author selection
+                    && subject != null && subject > 0 // Check for a valid subject selection
         }
     }
 

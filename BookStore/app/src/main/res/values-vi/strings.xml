@@ -6,7 +6,7 @@
     <string name="cancel_button">Hủy</string>
     <string name="delete">Xóa</string>
     <string name="delete_question">Bạn có chắc chắn muốn xóa không?</string>
-    <string name="no_item_description">Ôi!\nKhông có sách nào tồn tại trong ứng dụng.\n</string>
+    <string name="no_item_description">\nKhông có tài liệu trong hệ thống</string>
     <string name="no_author_description">Oops!\nKhông có tác giả nào tồn tại trong ứng dụng.\n</string>
     <string name="edit_item_title">Chỉnh sửa mặt hàng</string>
     <string name="item">Mặt hàng</string>
@@ -72,10 +72,11 @@
     <string name="Options">Tùy chọn</string>
     <string name="Book_name">Tên sách</string>
     <string name="Author_name">Tên tác giả</string>
-    <string name="Book_type">Loại sách</string>
+    <string name="Book_type">Loại CSDL</string>
     <string name="Publication_info">Thông tin xuất bản</string>
     <string name="Physical_description">Mô tả vật lý</string>
     <string name="Shelf_number">Số thứ tự trên kệ sách</string>
+    <string name="MFN">MFN</string>
 
     <string name="By">theo</string>
     <string name="Check">Chọn</string>
@@ -120,4 +121,15 @@
     <string name="select_an_options">Chọn một tùy chọn</string>
     <string name="default_all">Tất cả</string>
 
+    <string name="enter_password">Nhập mật khẩu</string>
+    <string name="wrong_password">Sai mật khẩu, thử lại</string>
+    <string name="submit_button">Xác nhận</string>
+    <string name= "access_admin">Xác thực quản trị viên</string>
+
+    <string name="save_book_description">Lưu các cuốn sách muốn mượn</string>
+    <string name="explore_button">Khám phá</string>
+    <string name="hide_password">Ẩn mật khẩu</string>
+    <string name="show_password">Hiện mật khẩu</string>
+    <string name="try_other_keywords">Hãy thử những từ khóa khác</string>
+    <string name="Found_books">Số sách tìm thấy: </string>
 </resources>

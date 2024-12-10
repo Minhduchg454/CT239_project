@@ -1,18 +1,16 @@
 package com.example.inventory.ui.home
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.inventory.R
-import com.example.inventory.data.Author
+import com.example.inventory.data.AUTHOR
 import com.example.inventory.data.AuthorsRepository
-import com.example.inventory.data.Book
+import com.example.inventory.data.BOOK
+import com.example.inventory.data.BOOK_TYPE
+import com.example.inventory.data.BookTypesRepository
 import com.example.inventory.data.BooksRepository
+import com.example.inventory.data.SUBJECT
+import com.example.inventory.data.SubjectsRepository
 import com.example.inventory.ui.author.toAuthorUiState
 import com.example.inventory.ui.search.resStringToSearchText
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,7 +29,9 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel (
     val booksRepository: BooksRepository,
-    val authorsRepository: AuthorsRepository
+    val authorsRepository: AuthorsRepository,
+    val subjectsRepository: SubjectsRepository,
+    val bookTypesRepository: BookTypesRepository
 ) : ViewModel() {
 
         //Nó giúp xác định khoảng thời gian chờ trước khi hủy kết nối với Flow khi không có subscriber nào.
@@ -82,28 +82,16 @@ class HomeViewModel (
     private val _selectIdAuthor = MutableStateFlow<Int?>(null)
     val selectIdAuthor: StateFlow<Int?> = _selectIdAuthor
 
+    private val _selectIdSubject = MutableStateFlow<Int?>(null)
+    val selectIdSubject: StateFlow<Int?> = _selectIdSubject
+
+    private val _selectIdType = MutableStateFlow<Int?>(null)
+    val selectIdType: StateFlow<Int?> = _selectIdType
 
 
-   //Tu dong khoi tao khi cap nhat ten tac gia
-    init {
-        //Tao luong coroutine moi
-        viewModelScope.launch {
-            selectAuthor
-                .flatMapLatest { authorName ->                      //lang nghe cac thay doi cua selectAuthor (stateFlow), khi thay doi thi goi ham thuc hien
-                    if (authorName.isNotEmpty()) {
-                        authorsRepository.getIdByName(authorName) //tra ve flow chua ten tac gia
-                    } else {
-                        flowOf(null)        // Khi tên tác giả trống, phát ra giá trị null
-                    }
-                }
-                .collect { authorId ->          //Lay ket qua tu flow va xu li no
-                    _selectIdAuthor.value = authorId // Cập nhật giá trị ID tác giả
-                }
-        }
-    }
 
     fun updateSearchQuery(newQuery: String) {
-        _searchQuery.value = newQuery // Cập nhật chuỗi tìm kiếm
+        _searchQuery.value = newQuery
     }
 
     fun updateSelectType(newType: String) {
@@ -118,13 +106,25 @@ class HomeViewModel (
         _selectSubject.value = newSubject
     }
 
+    fun updateSelectIdType(newIdType: Int?) {
+        _selectIdType.value = newIdType
+    }
+
+    fun updateSelectIdAuthor(newIdAuthor: Int?) {
+        _selectIdAuthor.value = newIdAuthor
+    }
+
+    fun updateSelectIdSubject(newIdSubject: Int?) {
+        _selectIdSubject.value = newIdSubject
+    }
+
     private val searchParametersFlow = combine(
         searchQuery,
-        selectType,
+        selectIdType,
         selectIdAuthor,
-        selectSubject
-    ) { query, typeSelection, authorId, subject ->
-        SearchParameters(query, typeSelection, authorId, subject)
+        selectIdSubject
+    ) { query, typeId, authorId, subjectId ->
+        SearchParameters(query, typeId, authorId, subjectId)
     }
 
 
@@ -135,8 +135,8 @@ class HomeViewModel (
             } else {
                     booksRepository.searchBooks(
                         query = parameters.query,
-                        type = parameters.typeSelection,
-                        subject = parameters.subject,
+                        typeId = parameters.typeId,
+                        subjectId = parameters.subjectId,
                         authorId = parameters.authorId
                     )
                         .map { booksList -> BooksUiState(booksList) } //Chuyen doi
@@ -170,6 +170,7 @@ class HomeViewModel (
             initialValue = BooksUiState(emptyList())
         )
 
+    //Cap nhat chuoi tim kiem admin
     fun updateAdminSearchQuery(newQuery: String) {
         _adminsSearchQuery.value = newQuery // Cập nhật chuỗi tìm kiếm
     }
@@ -202,23 +203,48 @@ class HomeViewModel (
             initialValue = BooksUiState() //Khoi tao gai tri ban dau
         )
 
+    //Nguon du lieu tac gia
+    val SubjectsUiState : StateFlow<SubjectsUiState> = subjectsRepository.getAllSubjectsStream()
+        .map { SubjectsUiState(it) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+            initialValue = SubjectsUiState()
+        )
+
+    //Nguon du lieu loai sach
+    val BookTypesUiState : StateFlow<BookTypesUiState> = bookTypesRepository.getAllBookTypesStream()
+        .map { BookTypesUiState(it) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+            initialValue = BookTypesUiState()
+        )
+
 }
 
 /**
  * Ui State for HomeScreen
  */
 data class BooksUiState(
-    val bookList: List<Book> = listOf(),
+    val bookList: List<BOOK> = listOf(),
 )
 
 data class AuthorsUiState(
-    val authorList: List<Author> = listOf(),
+    val authorList: List<AUTHOR> = listOf(),
 )
 
+data class SubjectsUiState(
+    val subjectList: List<SUBJECT> = listOf(),
+)
+
+data class BookTypesUiState(
+    val bookTypeList: List<BOOK_TYPE> = listOf(),
+)
 
 data class SearchParameters(
     val query: String,
-    val typeSelection: String,
+    val typeId: Int?,
     val authorId: Int?,
-    val subject: String
+    val subjectId: Int?,
 )

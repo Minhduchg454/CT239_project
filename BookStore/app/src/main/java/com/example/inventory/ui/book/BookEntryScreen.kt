@@ -49,6 +49,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -56,7 +57,9 @@ import androidx.navigation.NavHostController
 import com.example.inventory.InventoryApplication
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
-import com.example.inventory.data.Author
+import com.example.inventory.data.AUTHOR
+import com.example.inventory.data.BOOK_TYPE
+import com.example.inventory.data.SUBJECT
 import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.author.AuthorEntryDestination
 import com.example.inventory.ui.navigation.NavigationDestination
@@ -192,13 +195,24 @@ fun BookInputForm(
     val authorsRepository = (LocalContext.current.applicationContext as InventoryApplication).container.authorsRepository
     val authors by authorsRepository.getAllAuthorsStream().collectAsState(initial = emptyList())
 
+    //Danh sach chu de
+    val subjectsRepository = (LocalContext.current.applicationContext as InventoryApplication).container.subjectsRepository
+    val subjects by subjectsRepository.getAllSubjectsStream().collectAsState(initial = emptyList())
+
+    //Danh sach loai sach
+    val bookTypesRepository = (LocalContext.current.applicationContext as InventoryApplication).container.bookTypesRepository
+    val bookTypes by bookTypesRepository.getAllBookTypesStream().collectAsState(initial = emptyList())
+
+
     //Luu tru tac gia duoc chon, su dung remember do khong co co che tai cau truc nhu viewmodel
-    var selectAuthor by remember { mutableStateOf<Author?>(null)
-    }
+    var selectAuthor by remember { mutableStateOf<AUTHOR?>(null) }
+    var selectTypeBook by remember { mutableStateOf<BOOK_TYPE?>(null) }
+    var selectSubject by remember { mutableStateOf<SUBJECT?>(null) }
 
 
-    var selectTypeBook by remember { mutableStateOf("") }
-    var selectSubject by remember { mutableStateOf("") }
+
+    //var selectTypeBook by remember { mutableStateOf("") }
+    //var selectSubject by remember { mutableStateOf("") }
 
     //Trang thai hien thi DropdownMenu
     var expanded by remember { mutableStateOf(false) }
@@ -214,14 +228,10 @@ fun BookInputForm(
     var isCreatingAuthor by remember { mutableStateOf(false) }
 
 
-    val listSubject = SubjectData.listSubject
-    val listBookType = BookTypeData.listBookType
-
-
     LaunchedEffect(bookDetails) {
-        selectAuthor = authors.find { it.id == bookDetails.authorId }
-        selectTypeBook = bookDetails.type
-        selectSubject = bookDetails.subject
+        selectAuthor = authors.find { it.AUTHOR_Id == bookDetails.authorId }
+        selectTypeBook = bookTypes.find { it.BT_Id == bookDetails.type }
+        selectSubject = subjects.find { it.SUBJECT_Id == bookDetails.subject }
     }
 
 
@@ -233,9 +243,10 @@ fun BookInputForm(
             expanded = expanded, //Trang thai hien thi DropdownMenu
             onExpandedChange = {   expanded = !expanded } //
         ) {
+
             /*Nhập tên tác giả */
             OutlinedTextField(
-                value = selectAuthor?.name ?: "",
+                value = selectAuthor?.AUTHOR_Name ?: "",
                 onValueChange = {},
                 label = {Text(stringResource(id = R.string.Author_name) + "*") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
@@ -253,10 +264,10 @@ fun BookInputForm(
             ) {
                 authors.forEach { author ->
                     DropdownMenuItem(
-                        text = { Text(author.name) },
+                        text = { Text(author.AUTHOR_Name) },
                         onClick = {
                             selectAuthor = author
-                            onValueChange(bookDetails.copy(authorId = author.id))
+                            onValueChange(bookDetails.copy(authorId = author.AUTHOR_Id))
                             expanded = false
                             isCreatingAuthor = false // Đảm bảo chuyển sang chọn tác giả hiện có
                         }
@@ -292,6 +303,7 @@ fun BookInputForm(
 
 
 
+
         /*Nhập thông tin xuất bản  */
         OutlinedTextField(
             value = bookDetails.publicationInfo, // Hiển thị trong trường nhập liệu cho thông tin xuất bản
@@ -323,6 +335,8 @@ fun BookInputForm(
         )
 
 
+
+
         /*Nhập mô tả vật lý */
         OutlinedTextField(
             value = bookDetails.physicalDescription, // Hiển thị trong trường nhập liệu cho mô tả vật lý
@@ -331,23 +345,46 @@ fun BookInputForm(
             colors = TextFieldColorsCustom(),
             modifier = Modifier
                 .fillMaxWidth()
+                //.imePadding(), // Thêm imePadding() để tránh bị bàn phím che,
+            ,shape = RoundedCornerShape(16.dp),
+            enabled = enabled,
+            singleLine = true,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next
+            ),
+        )
+
+
+
+        /*Nhập mã số sách */
+        OutlinedTextField(
+            value = bookDetails.MFN.toString(), // Chuyển Int thành String để hiển thị
+            onValueChange = { newValue ->
+                // Chuyển chuỗi nhập vào thành Int nếu có thể
+                val mfn = newValue.toIntOrNull() ?: 0
+                onValueChange(bookDetails.copy(MFN = mfn))
+            },
+            label = { Text("MFN *") },
+            colors = TextFieldColorsCustom(),
+            modifier = Modifier
+                .fillMaxWidth()
                 .imePadding(), // Thêm imePadding() để tránh bị bàn phím che,
             shape = RoundedCornerShape(16.dp),
             enabled = enabled,
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number, // Bàn phím số
                 imeAction = ImeAction.Done
             ),
         )
 
-
-            /*Nhập loại sách*/
-            ExposedDropdownMenuBox(
+        /*Nhập loại sách*/
+        ExposedDropdownMenuBox(
                 expanded = expandedTypeBook, //Trang thai hien thi DropdownMenu
                 onExpandedChange = {   expandedTypeBook = !expandedTypeBook } //
-            ) {
+        ) {
                 OutlinedTextField(
-                    value = stringResource(stringTypeToResourceId(bookDetails.type)),
+                    value = stringResource(stringTypeToResourceId(selectTypeBook?.BT_Name ?: "")),
                     onValueChange = {},
                     label = {Text(stringResource(id = R.string.Book_type)+ "*")},
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTypeBook) },
@@ -360,36 +397,35 @@ fun BookInputForm(
                 )
 
 
-
                 ExposedDropdownMenu(
                     expanded = expandedTypeBook,
                     onDismissRequest = { expandedTypeBook = false }
                 ) {
-                    listBookType.forEach { typeBook ->
+                    bookTypes.forEach { typeBook ->
                         DropdownMenuItem(
                             text = {
-                                val typeId = stringTypeToResourceId(typeBook)
-                                Text(stringResource(typeId))
+                                val typeBookResId = stringTypeToResourceId(typeBook.BT_Name)
+                                Text(stringResource(typeBookResId))
                                    },
                             onClick = {
-                                //selectTypeBook = stringTypeToResourceId( typeBook )
-                                onValueChange(bookDetails.copy(type = typeBook))
+                                selectTypeBook = typeBook
+                                onValueChange(bookDetails.copy(type = typeBook.BT_Id))
                                 expandedTypeBook = false
                             }
                         )
+
                     }
-
                 }
-            }
+        }
 
 
-            /*Nhập chủ đề */
-            ExposedDropdownMenuBox(
+        /*Nhập chủ đề */
+        ExposedDropdownMenuBox(
                 expanded = expandedSubject, //Trang thai hien thi DropdownMenu
                 onExpandedChange = {   expandedSubject = !expandedSubject } //
-            ) {
+        ) {
                 OutlinedTextField(
-                    value = stringResource(stringSubjectToResourceId(bookDetails.subject)),
+                    value = stringResource(stringSubjectToResourceId(selectSubject?.SUBJECT_Name ?: "")),
                     onValueChange = {},
                     label = {Text(stringResource(id = R.string.Subject)+ "*")},
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedSubject) },
@@ -401,27 +437,26 @@ fun BookInputForm(
                     colors = TextFieldColorsCustom()
                 )
 
-
                 ExposedDropdownMenu(
                     expanded = expandedSubject,
                     onDismissRequest = { expandedSubject = false }
                 ) {
-                    listSubject.forEach { typeSubject ->
+                    subjects.forEach { typeSubject ->
                         DropdownMenuItem(
                             text = {
-                                val subjectResId =stringSubjectToResourceId(typeSubject)
+                                val subjectResId =stringSubjectToResourceId(typeSubject.SUBJECT_Name)
                                 Text(stringResource(subjectResId))
                             },
                             onClick = {
-                                //selectSubject = stringTypeToResourceId(typeSubject)
-                                onValueChange(bookDetails.copy(subject = typeSubject))
+                                selectSubject = typeSubject
+                                onValueChange(bookDetails.copy(subject = typeSubject.SUBJECT_Id))
                                 expandedSubject = false
                             }
                         )
                     }
 
                 }
-            }
+        }
 
         if (enabled) {
             Text(
@@ -472,44 +507,4 @@ fun stringTypeToResourceId(text: String): Int {
         "Thesis" -> R.string.book_type_thesis
         else -> R.string.book_type_printed // Mặc định về loại sách in nếu không khớp
     }
-}
-
-
-
-object SubjectData {
-    val listSubject = listOf(
-        "Information Technology",
-        "Philosophy",
-        "Foreign Language",
-        "Physical Education",
-        "Pedagogy",
-        "Biotechnology",
-        "Economics",
-        "Agriculture",
-        "Fisheries",
-        "Livestock",
-        "Veterinary Medicine",
-        "Processing",
-        "Environment and Resources",
-        "Tourism",
-        "Law",
-        "Construction",
-        "Other"
-    )
-}
-
-
-object BookTypeData {
-    val listBookType = listOf(
-        "Printed Book",
-        "CD-ROM",
-        "Printed Thesis",
-        "Digital Thesis",
-        "Printed Report",
-        "Digital Report",
-        "E-Book",
-        "Printed Dissertation",
-        "Digital Dissertation",
-        "Thesis"
-    )
 }

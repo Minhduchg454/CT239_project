@@ -48,8 +48,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
-import com.example.inventory.data.Author
-import com.example.inventory.data.Book
 import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.home.BookCard
 import com.example.inventory.ui.home.HomeBookBodyLazyColumn
@@ -71,28 +69,28 @@ object AdminsScreenDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminsScreen(
-    navigateToItemUpdate: (Int) -> Unit, //Di chuyen toi item da click, id cua item
-    navigateBack: () -> Unit,
+    navigateToItemUpdate: (Int) -> Unit,
+    navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel (factory = AppViewModelProvider.Factory)
 ) {
 
-    val searchUiState by viewModel.adminsSearchUiState.collectAsState() //Du lieu hien thi B2
-    val searchQuery by viewModel.adminsSearchQuery.collectAsState() //Du lieu nhap vao tim kiem B1
-    val authorUiState by viewModel.AuthorsUiState.collectAsState()
+    val searchUiState by viewModel.adminsSearchUiState.collectAsState() //Du lieu hien thi
+    val searchQuery by viewModel.adminsSearchQuery.collectAsState() //Du lieu nhap vao tim kiem
+    val authorUiState by viewModel.AuthorsUiState.collectAsState() //Du lieu tac gia
 
     //Thiet lap cuon cho top bar
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = { //Thanh bar tren cung ~ tieu de
+        topBar = {
             Column {
                 InventoryTopAppBar(
                     title = stringResource(AdminsScreenDestination.titleRes),
                     canNavigateBack = true,
                     scrollBehavior = scrollBehavior,
-                    navigateUp = navigateBack
+                    navigateUp = navigateUp
                 )
                 SearchBarHome(
                     searchQuery = searchQuery,

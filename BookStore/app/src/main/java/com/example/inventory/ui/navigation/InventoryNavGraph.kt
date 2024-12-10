@@ -170,7 +170,7 @@ fun InventoryNavHost(
                 navigateToItemUpdate = {
                     navController.navigate("${BookDetailsDestination.route}/${it}")
                 },
-                navigateBack = { navController.navigateUp() },
+                navigateUp = { navController.navigateUp() },
             )
         }
 
@@ -180,7 +180,11 @@ fun InventoryNavHost(
             LibraryScreen(
                 navigateToItemUpdate = {
                     navController.navigate("${BookDetailsDestination.route}/${it}")
+                },
+                navigateToHomeScreen = {
+                    navController.navigate(HomeDestination.route)
                 }
+
             )
         }
 
@@ -191,7 +195,7 @@ fun InventoryNavHost(
         ){
             BookEntryScreen(
                 navigateBack = { navController.navigate(BookEntryDestination.route) },
-                onNavigateUp = {  navController.navigate(SettingsDestination.route)},
+                onNavigateUp = {  navController.navigateUp()},
                 navigateToAddAuthor = {navController.navigate(AuthorEntryDestination.route)},
             )
         }

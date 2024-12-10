@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollable
@@ -24,6 +25,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -40,6 +44,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -70,6 +75,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -82,19 +88,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
-import com.example.inventory.data.Author
-import com.example.inventory.data.Book
+import com.example.inventory.data.AUTHOR
+import com.example.inventory.data.BOOK
 import com.example.inventory.ui.AppViewModelProvider
-import com.example.inventory.ui.book.BookTypeData
-import com.example.inventory.ui.book.SubjectData
 import com.example.inventory.ui.home.BookCard
 import com.example.inventory.ui.home.HomeBookBodyLazyColumn
 import com.example.inventory.ui.home.HomeViewModel
-import com.example.inventory.ui.home.groupBooksBySubject
 import com.example.inventory.ui.navigation.NavigationDestination
-import com.example.inventory.ui.theme.CardColorsCustom
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import kotlin.reflect.full.memberProperties
+
 
 
 object SearchScreenDestination : NavigationDestination {
@@ -116,6 +117,8 @@ fun SearchScreen(
     //Lay du lieu tu viewModel
     val searchUiState by viewModel.searchUiState.collectAsState()
     val authorUiState by viewModel.AuthorsUiState.collectAsState()
+    val subjectUiState by viewModel.SubjectsUiState.collectAsState()
+    val bookTypeUiState by viewModel.BookTypesUiState.collectAsState()
 
     //Danh sach lua chon, hien thi lua chon cua nguoi dung
     val searchQuery by viewModel.searchQuery.collectAsState()
@@ -123,7 +126,16 @@ fun SearchScreen(
     val selectAuthor by viewModel.selectAuthor.collectAsState()
     val selectSubject by viewModel.selectSubject.collectAsState()
 
+    val idAuthor = authorUiState.authorList.find { it.AUTHOR_Name == selectAuthor }?.AUTHOR_Id ?: null
+    val idSubject = subjectUiState.subjectList.find { it.SUBJECT_Name == selectSubject }?.SUBJECT_Id ?: null
+    val idType = bookTypeUiState.bookTypeList.find { it.BT_Name == selectType }?.BT_Id ?: null
 
+    viewModel.updateSelectIdType(idType)
+    viewModel.updateSelectIdAuthor(idAuthor)
+    viewModel.updateSelectIdSubject(idSubject)
+
+    //So luong sach
+    var bookCount= searchUiState.bookList.size
     //Hien thi kieu chon
     val isTypeSearchVision = searchQuery.isEmpty()
 
@@ -131,11 +143,13 @@ fun SearchScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     //Danh sach tac gia
-    val listAuthors = authorUiState.authorList.map { it.name }
+    val listAuthors = authorUiState.authorList.map { it.AUTHOR_Name }
+    val listSubject = subjectUiState.subjectList.map { it.SUBJECT_Name }
+    val listBookType = bookTypeUiState.bookTypeList.map { it.BT_Name }
 
     val listAuthorWithAll= listOf("All") + listAuthors
-    val listSubjectWithAll = listOf("All") + SubjectData.listSubject
-    val listBookTypeWithAll = listOf("All") + BookTypeData.listBookType
+    val listSubjectWithAll = listOf("All") + listSubject
+    val listBookTypeWithAll = listOf("All") + listBookType
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -167,10 +181,11 @@ fun SearchScreen(
                     modifier = modifier.padding(innerPadding)
                 )
             }else{
-                HomeBookBodyLazyColumn(
+                SearchBookBodyLazyColumn(
                     bookList = searchUiState.bookList,
                     authorList = authorUiState.authorList,
                     onItemClick = navigateToItemUpdate,
+                    bookCount = bookCount,
                     modifier = modifier
                         .fillMaxSize(),
                     contentPadding = innerPadding,
@@ -178,6 +193,103 @@ fun SearchScreen(
             }
     }
 }
+
+
+@Composable
+fun SearchBookBodyLazyColumn(
+    bookList: List<BOOK>,
+    authorList: List<AUTHOR>,
+    onItemClick: (Int) -> Unit,
+    bookCount: Int,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues,
+) {
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top,
+        modifier = modifier
+            .padding(
+                top = dimensionResource(id = R.dimen.padding_small),
+                start = dimensionResource(id = R.dimen.padding_small),
+                end = dimensionResource(id = R.dimen.padding_small),
+            ),
+    ) {
+
+        if (bookList.isEmpty()) {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.no_book),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .height(120.dp)
+                        .width(120.dp)
+                )
+
+                Text(
+                    text = stringResource(R.string.no_item_description),
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center,
+                )
+
+                Text(
+                    text = stringResource(R.string.try_other_keywords),
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+        } else {
+            Column (
+                modifier = Modifier.padding(contentPadding)
+            ) {
+
+                Text(
+                    text = stringResource(R.string.Found_books) + " $bookCount",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    modifier = Modifier.padding(start = dimensionResource(R.dimen.padding_medium))
+                )
+
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = modifier
+                        .fillMaxSize(),
+                ) {
+                    items(items =  bookList, key = { it.BOOK_Id }) { book ->
+
+                        val author = authorList.find { it.AUTHOR_Id == book.AUTHOR_Id } ?: AUTHOR(AUTHOR_Name = "Unknown")
+
+                        //Chi thuc hien neu author khong phai la null, neu la null thi bo qua chay den bien khac
+                        BookCard(
+                            book = book,
+                            author = author,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .width(200.dp) // Thiết lập chiều rộng cụ thể
+                                .height(150.dp) // Thiết lập chiều cao cụ thể
+                                .padding(dimensionResource(id = R.dimen.padding_small))
+                                .clickable { onItemClick(book.BOOK_Id) }
+                        )
+
+                    }
+                }
+            }
+            }
+
+
+
+        }
+}
+
+
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

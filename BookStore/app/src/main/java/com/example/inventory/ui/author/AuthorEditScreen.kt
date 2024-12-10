@@ -34,14 +34,14 @@ object AuthorEditDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthorEditScreen (
-    navigateBack: () -> Unit, //Lam moi
-    onNavigateUp: () -> Unit, //Tro lai man hinh truoc do
+    navigateBack: () -> Unit,
+    onNavigateUp: () -> Unit, //Tro ve man hinh truoc do
     modifier: Modifier = Modifier,
     viewModel: AuthorEditViewModel = viewModel(factory = AppViewModelProvider.Factory),
 ){
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    // val authorUiState by viewModel.authorEditUiState.collectAsState()
+
 
     Scaffold(
         topBar = {

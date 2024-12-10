@@ -47,6 +47,7 @@ import com.example.inventory.ui.navigation.NavigationDestination
 import com.example.inventory.ui.search.SearchScreenDestination
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+//Bo cuc giao dien cua ung dung.
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen (
@@ -98,7 +99,7 @@ fun BottomNavigationBar(
 
     // Kiem soat giao dien
     val systemUiController = rememberSystemUiController() //Kiem soat giao dien cua thanh trang thai, thanh dieu huong va thanh thanh noi dung
-    val useDarkIcons = !isSystemInDarkTheme() //Kiem tra co phai giao dien tôi hay khong
+    val useDarkIcons = !isSystemInDarkTheme() //Kiem tra co phai giao dien toi hay khong
 
     // Màu của thanh điều hướng dưới
     val navigationBarColor = Color.Transparent //Chinh sua mau thanh dieu huong
@@ -122,8 +123,7 @@ fun BottomNavigationBar(
     )
 
     NavigationBar (
-        modifier = modifier
-            .height(90.dp),
+        modifier = modifier,
         containerColor = navigationBarColor
     ) {
         screens.forEach { screen ->
@@ -182,12 +182,10 @@ fun RowScope.AddItem(
     )
 }
 
-
-
-
 /*
 Thanh tiêu đề và điều hướng trên cùng
  */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InventoryTopAppBar(
@@ -203,7 +201,6 @@ fun InventoryTopAppBar(
 
     // Màu sắc cho thanh trạng thái và tiêu đề
     val barColor = MaterialTheme.colorScheme.background
-
 
     // Cập nhật màu nền của thanh trạng thái
     SideEffect {
@@ -242,17 +239,4 @@ fun InventoryTopAppBar(
             containerColor = barColor
         ),
     )
-}
-
-
-
-
-
-/**
- * Top level composable that represents screens for the application.
- */
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun InventoryApp(navController: NavHostController = rememberNavController()) {
-    InventoryNavHost(navController = navController)
 }

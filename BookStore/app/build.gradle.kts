@@ -52,6 +52,7 @@ android {
     namespace = "com.example.inventory"
 }
 
+
 dependencies {
     // Import the Compose BOM
     implementation(platform("androidx.compose:compose-bom:2024.08.00"))

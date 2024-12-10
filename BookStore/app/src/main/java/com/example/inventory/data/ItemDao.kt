@@ -9,102 +9,139 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Database access object to access the Inventory database
+ * 2.
+ * Khai bao cac phuong thuc cua thuc the
  */
 
-
+//Dao se tu dong sinh ma nguon dua tren cac cau truy van. Vi vay sd interface
 @Dao
 interface BooksDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(book: Book)
+    suspend fun insert(book: BOOK)
 
     @Update
-    suspend fun update(book: Book)
+    suspend fun update(book: BOOK)
 
     @Delete
-    suspend fun delete(book: Book)
+    suspend fun delete(book: BOOK)
 
-    @Query("SELECT * FROM books Where bookId = :bookId")
-    fun getBookById(bookId: Int): Flow<Book>
+    @Query("SELECT * FROM BOOK WHERE BOOK_Id = :bookId")
+    fun getBookById(bookId: Int): Flow<BOOK>
 
-    @Query ("SELECT * FROM books ORDER By name ASC") //asc: tang dan (A->Z) (0->9) desc: giam dan
-    fun getAllBooks(): Flow<List<Book>>
+    @Query("SELECT * FROM BOOK ORDER BY BOOK_Name ASC")
+    fun getAllBooks(): Flow<List<BOOK>>
 
-    @Query ("SELECT * FROM books WHERE saveToLibrary = 1 ORDER BY name ASC")
-    fun getAllSaveBooks(): Flow<List<Book>>
+    @Query("SELECT * FROM BOOK WHERE BOOK_saveToLibrary = 1 ORDER BY BOOK_Name ASC")
+    fun getAllSaveBooks(): Flow<List<BOOK>>
 
+    @Query("SELECT * FROM BOOK WHERE LOWER(BOOK_Name) LIKE '%' || LOWER(:name) || '%' ORDER BY BOOK_Name ASC")
+    fun searchBooksByName(name: String): Flow<List<BOOK>>
 
-    @Query ("SELECT * FROM books WHERE LOWER(name) LIKE '%' || LOWER(:name) || '%' ORDER BY name ASC")
-    fun searchBooksByName(name: String): Flow<List<Book>>
+    @Query("SELECT * FROM BOOK WHERE SUBJECT_Id = :subjectId ORDER BY BOOK_Name ASC")
+    fun searchBooksBySubject(subjectId: Int): Flow<List<BOOK>>
 
-    @Query ("SELECT * FROM books WHERE LOWER(subject) LIKE '%' || LOWER(:subject) || '%' ORDER BY name ASC")
-    fun searchBooksBySubject(subject: String): Flow<List<Book>>
+    @Query("SELECT * FROM BOOK WHERE BT_Id = :typeId ORDER BY BOOK_Name ASC")
+    fun searchBooksByType(typeId: Int): Flow<List<BOOK>>
 
-    @Query ("SELECT * FROM books WHERE LOWER(type) LIKE '%' || LOWER(:type) || '%' ORDER BY name ASC")
-    fun searchBooksByType(type: String): Flow<List<Book>>
+    @Query("SELECT * FROM BOOK WHERE AUTHOR_Id = :authorId ORDER BY BOOK_Name ASC")
+    fun searchBooksByAuthor(authorId: Int): Flow<List<BOOK>>
 
-    @Query ("SELECT * FROM books WHERE authorId = :authorId ORDER BY name ASC")
-    fun searchBooksByAuthor(authorId: Int): Flow<List<Book>>
-
-
-
-
-    @Query("UPDATE books SET saveToLibrary = :saveToLibrary WHERE bookId = :bookId")
+    @Query("UPDATE BOOK SET BOOK_saveToLibrary = :saveToLibrary WHERE BOOK_Id = :bookId")
     suspend fun updateSaveToLibrary(bookId: Int, saveToLibrary: Boolean)
 
-    @Query("SELECT saveToLibrary FROM books WHERE bookId = :bookId")
+    @Query("SELECT BOOK_saveToLibrary FROM BOOK WHERE BOOK_Id = :bookId")
     fun getBookSavedState(bookId: Int): Flow<Boolean>
-    //Để ui phản hồi theo sự thay đổi dữ liệu nên dùng flow
-
 
     @Query("""
-        SELECT * FROM books 
+        SELECT * FROM BOOK 
         WHERE 
-            (LOWER(name) LIKE '%' || LOWER(:query) || '%' OR :query IS NULL) AND 
-            (LOWER(type) LIKE '%' || LOWER(:type) || '%' OR :type IS NULL) AND
-            (LOWER(subject) LIKE '%' || LOWER(:subject) || '%' OR :subject IS NULL) AND
-            (authorId = :authorId OR :authorId IS NULL)
-        ORDER BY name ASC
+            (LOWER(BOOK_Name) LIKE '%' || LOWER(:query) || '%' OR :query IS NULL) AND 
+            (BT_Id = :typeId OR :typeId IS NULL) AND
+            (SUBJECT_Id = :subjectId OR :subjectId IS NULL) AND
+            (AUTHOR_Id = :authorId OR :authorId IS NULL)
+        ORDER BY BOOK_Name ASC
     """)
     fun searchBooks(
         query: String? = null,
-        type: String? = null,
-        subject: String? = null,
+        typeId: Int? = null,
+        subjectId: Int? = null,
         authorId: Int? = null
-    ): Flow<List<Book>>
+    ): Flow<List<BOOK>>
+}
 
 
+@Dao
+interface AuthorDao {
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(author: AUTHOR)
 
+    @Update
+    suspend fun update(author: AUTHOR)
 
+    @Delete
+    suspend fun delete(author: AUTHOR)
 
+    @Query("SELECT * FROM AUTHOR WHERE AUTHOR_Id = :authorId ORDER BY AUTHOR_Name ASC")
+    fun searchAuthorById(authorId: Int): Flow<AUTHOR>
 
+    @Query("SELECT * FROM AUTHOR WHERE LOWER(AUTHOR_Name) LIKE '%' || LOWER(:name) || '%' ORDER BY AUTHOR_Name ASC")
+    fun searchAuthorByName(name: String): Flow<List<AUTHOR>>
 
+    @Query("SELECT * FROM AUTHOR ORDER BY AUTHOR_Name ASC")
+    fun getAllAuthors(): Flow<List<AUTHOR>>
 
-
-
+    @Query("SELECT AUTHOR_Id FROM AUTHOR WHERE LOWER(AUTHOR_Name) = LOWER(:name)")
+    fun getIdByName(name: String): Flow<Int>
 }
 
 @Dao
-interface AuthorDao{
+interface SubjectDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(author: Author)
+    suspend fun insert(subject: SUBJECT)
 
     @Update
-    suspend fun update(author: Author)
+    suspend fun update(subject: SUBJECT)
 
     @Delete
-    suspend fun delete(author: Author)
+    suspend fun delete(subject: SUBJECT)
 
-    @Query("Select * FROM authors WHERE Id = :authorId ORDER BY name ASC")
-    fun searchAuthorById (authorId: Int): Flow<Author>
+    @Query("SELECT * FROM SUBJECT WHERE SUBJECT_Id = :subjectId")
+    fun getSubjectById(subjectId: Int): Flow<SUBJECT>
 
-    @Query("SELECT * FROM authors WHERE LOWER(name) LIKE '%' || LOWER(:name) || '%' ORDER BY name ASC")
-    fun searchAuthorByName(name: String): Flow<List<Author>>
+    @Query("SELECT * FROM SUBJECT ORDER BY SUBJECT_Id ASC")
+    fun getAllSubjects(): Flow<List<SUBJECT>>
 
-    @Query ("SELECT * FROM authors ORDER BY name ASC")
-    fun getAllAuthors(): Flow<List<Author>>
+    @Query("SELECT * FROM SUBJECT WHERE LOWER(SUBJECT_Name) LIKE '%' || LOWER(:name) || '%' ORDER BY SUBJECT_Name ASC")
+    fun searchSubjectByName(name: String): Flow<List<SUBJECT>>
 
-    @Query("SELECT id FROM authors WHERE LOWER(name) LIKE '%' || LOWER(:name) || '%'")
+    @Query("SELECT SUBJECT_Id FROM SUBJECT WHERE LOWER(SUBJECT_Name) = LOWER(:name)")
     fun getIdByName(name: String): Flow<Int>
+}
 
+/**
+ * Database access object for the BOOK_TYPE table
+ */
+@Dao
+interface BookTypeDao {
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(bookType: BOOK_TYPE)
+
+    @Update
+    suspend fun update(bookType: BOOK_TYPE)
+
+    @Delete
+    suspend fun delete(bookType: BOOK_TYPE)
+
+    @Query("SELECT * FROM BOOK_TYPE WHERE BT_Id = :bookTypeId")
+    fun getBookTypeById(bookTypeId: Int): Flow<BOOK_TYPE>
+
+    @Query("SELECT * FROM BOOK_TYPE ORDER BY BT_Name ASC")
+    fun getAllBookTypes(): Flow<List<BOOK_TYPE>>
+
+    @Query("SELECT * FROM BOOK_TYPE WHERE LOWER(BT_Name) LIKE '%' || LOWER(:name) || '%' ORDER BY BT_Name ASC")
+    fun searchBookTypeByName(name: String): Flow<List<BOOK_TYPE>>
+
+
+    @Query("SELECT BT_Id FROM BOOK_TYPE WHERE LOWER(BT_Name) = LOWER(:name)")
+    fun getIdByName(name: String): Flow<Int>
 }

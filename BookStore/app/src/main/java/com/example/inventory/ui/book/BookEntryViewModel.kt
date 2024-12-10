@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.inventory.data.Book
+import com.example.inventory.data.BOOK
 import com.example.inventory.data.BooksRepository
 
 
@@ -33,8 +33,11 @@ class BookEntryViewModel (
      */
     private fun validateInput(uiState: BookDetails = bookUiState.bookDetails): Boolean {
         return with(uiState) {
-            name.isNotBlank() && type.isNotBlank() && publicationInfo.isNotBlank()
-                    && shelfNumber.isNotBlank() && subject.isNotBlank() && physicalDescription.isNotBlank()
+            name.isNotBlank() && publicationInfo.isNotBlank() && shelfNumber.isNotBlank()
+                    && physicalDescription.isNotBlank() && MFN > 0
+                    && type != null && type > 0 // Check for a valid selection from list
+                    && authorId != null && authorId > 0 // Check for a valid author selection
+                    && subject != null && subject > 0 // Check for a valid subject selection
         }
     }
 
@@ -49,32 +52,34 @@ class BookEntryViewModel (
 }
 
 //Chuyen tu BookDetails sang Book
-fun BookDetails.toBook(): Book = Book(
-    bookId = bookId,
-    name = name,
-    type = type,
-    authorId = authorId,
-    publicationInfo = publicationInfo,
-    shelfNumber = shelfNumber,
-    subject = subject,
-    physicalDescription = physicalDescription,
-    saveToLibrary = saveToLibrary
+fun BookDetails.toBook(): BOOK = BOOK(
+    BOOK_Id = bookId,
+    BOOK_Name = name,
+    BT_Id = type,
+    AUTHOR_Id = authorId,
+    Book_PublicationInfo = publicationInfo,
+    BOOK_ShelfNumber = shelfNumber,
+    SUBJECT_Id = subject,
+    BOOK_PhysicalDescription = physicalDescription,
+    BOOK_saveToLibrary = saveToLibrary,
+    Book_MFN = MFN
 )
 
 /*
     Book to BookDetails
  */
 
-fun Book.toBookDetails(): BookDetails = BookDetails(
-    bookId = bookId,
-    name = name,
-    type = type,
-    authorId = authorId,
-    publicationInfo = publicationInfo,
-    shelfNumber = shelfNumber,
-    subject = subject,
-    physicalDescription = physicalDescription,
-    saveToLibrary = saveToLibrary
+fun BOOK.toBookDetails(): BookDetails = BookDetails(
+    bookId = BOOK_Id,
+    name = BOOK_Name,
+    type = BT_Id,
+    authorId = AUTHOR_Id,
+    publicationInfo = Book_PublicationInfo,
+    shelfNumber = BOOK_ShelfNumber,
+    subject = SUBJECT_Id,
+    physicalDescription = BOOK_PhysicalDescription,
+    saveToLibrary = BOOK_saveToLibrary,
+    MFN = Book_MFN
 )
 
 
@@ -85,7 +90,7 @@ fun Book.toBookDetails(): BookDetails = BookDetails(
         + this. là đại diện cho đối tượng gọi hàm mở rộng
 
  */
-fun Book.toBookUiState(isEntryValid: Boolean = false): BookUiState = BookUiState(
+fun BOOK.toBookUiState(isEntryValid: Boolean = false): BookUiState = BookUiState(
     bookDetails = this.toBookDetails(),
     isEntryValid = isEntryValid
 )
@@ -100,13 +105,14 @@ data class BookUiState(
 data class BookDetails(
     val bookId: Int = 0,
     val name: String = "",
-    val type: String ="",
+    val type: Int? = 0,
     val authorId: Int? = 0, //cho phep gia tri null
     val publicationInfo: String ="",
     val shelfNumber: String ="",
-    val subject: String = "",
+    val subject: Int? = 0,
     val physicalDescription: String ="",
-    val saveToLibrary: Boolean = false
+    val saveToLibrary: Boolean = false,
+    val MFN: Int = 0
 )
 
 

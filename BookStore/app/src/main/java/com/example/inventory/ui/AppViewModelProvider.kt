@@ -15,8 +15,10 @@ import com.example.inventory.ui.book.BookEntryViewModel
 import com.example.inventory.ui.home.HomeViewModel
 import com.example.inventory.ui.home.ListSubjectViewModel
 import com.example.inventory.ui.book.BookDetailsViewModel
+import com.example.inventory.ui.settings.infoScreenViewModel
 
-
+//Tạo và quan ly cac viewmodel
+//Cung cap database
 /**
  * Provides Factory to create instance of ViewModel for the entire Inventory app
  */
@@ -30,7 +32,9 @@ object AppViewModelProvider {
             BookDetailsViewModel(
                 this.createSavedStateHandle(),
                 inventoryApplication().container.booksRepository,
-                inventoryApplication().container.authorsRepository
+                inventoryApplication().container.authorsRepository,
+                inventoryApplication().container.subjectsRepository,
+                inventoryApplication().container.bookTypesRepository
             )
         }
 
@@ -38,7 +42,9 @@ object AppViewModelProvider {
         initializer {
             HomeViewModel(
                 inventoryApplication().container.booksRepository,
-                inventoryApplication().container.authorsRepository
+                inventoryApplication().container.authorsRepository,
+                inventoryApplication().container.subjectsRepository,
+                inventoryApplication().container.bookTypesRepository
             )
         }
 
@@ -69,7 +75,8 @@ object AppViewModelProvider {
             ListSubjectViewModel(
                 this.createSavedStateHandle(),
                 inventoryApplication().container.booksRepository,
-                inventoryApplication().container.authorsRepository
+                inventoryApplication().container.authorsRepository,
+                inventoryApplication().container.subjectsRepository,
             )
         }
 
@@ -87,6 +94,11 @@ object AppViewModelProvider {
                 inventoryApplication().container.authorsRepository
             )
         }
+
+        // Initializer for infoScreenViewModel
+        initializer {
+            infoScreenViewModel()
+        }
     }
 }
 
@@ -94,5 +106,13 @@ object AppViewModelProvider {
  * Extension function to queries for [Application] object and returns an instance of
  * [InventoryApplication].
  */
+
+//Có mục tiêu cung cấp cách lấy một instance của lớp InventoryApplication từ CreationExtras.
+//Lấy đối tượng Application được lưu trữ trong CreationExtras
+//+ và ép kiểu nó thành InventoryApplication.
+//CreationExtras chứa thông tin bổ sung khi ViewModel
+//* + được khởi tạo, bao gồm cả một Application instance.
+
 fun CreationExtras.inventoryApplication(): InventoryApplication =
     (this[AndroidViewModelFactory.APPLICATION_KEY] as InventoryApplication)
+

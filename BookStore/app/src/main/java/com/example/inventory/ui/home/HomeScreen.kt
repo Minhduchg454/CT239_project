@@ -3,6 +3,7 @@ package com.example.inventory.ui.home
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.ScrollableDefaults.overscrollEffect
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,6 +57,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -64,8 +67,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.inventory.InventoryTopAppBar
 import com.example.inventory.R
-import com.example.inventory.data.Author
-import com.example.inventory.data.Book
+import com.example.inventory.data.AUTHOR
+import com.example.inventory.data.BOOK
+import com.example.inventory.data.BOOK_TYPE
+import com.example.inventory.data.SUBJECT
 import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.book.stringSubjectToResourceId
 import com.example.inventory.ui.navigation.NavigationDestination
@@ -85,7 +90,7 @@ object HomeDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navigateToItemUpdate: (Int) -> Unit, //Di chuyen toi item da click, id cua item
+    navigateToItemUpdate: (Int) -> Unit,
     navigateToListSubject: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel:  HomeViewModel = viewModel (factory = AppViewModelProvider.Factory),
@@ -93,10 +98,11 @@ fun HomeScreen(
     //Nguon du lieu cap nhat lien tuc
     val bookUiState by viewModel.BooksUiState.collectAsState()
     val authorUiState by viewModel.AuthorsUiState.collectAsState()
-
+    val subjectUiState by viewModel.SubjectsUiState.collectAsState()
 
     //Thiet lap cuon cho top bar
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
 
     Scaffold(
         modifier = modifier
@@ -114,6 +120,7 @@ fun HomeScreen(
         HomeBookBodyLazyrow(
             bookList = bookUiState.bookList,
             authorList = authorUiState.authorList,
+            subjectList = subjectUiState.subjectList ,
             onItemClick = navigateToItemUpdate,
             modifier = modifier
                 .fillMaxSize(),
@@ -126,89 +133,109 @@ fun HomeScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeBookBodyLazyrow(
-    bookList: List<Book>,
-    authorList: List<Author>,
+    bookList: List<BOOK>,
+    authorList: List<AUTHOR>,
+    subjectList: List<SUBJECT>,
     onItemClick: (Int) -> Unit,
     navigateToListSubject: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     val booksBySubject = groupBooksBySubject(bookList)
-
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize(),
-        contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)) //Khoang cach tung item
+    if (bookList.isEmpty()){
+        // Hiển thị thông báo nếu không có dữ liệu
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(contentPadding),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-        booksBySubject.forEach { (subject, books) ->
-            item {
-                Row (
-                  modifier =
-                  Modifier
-                      .padding(horizontal = dimensionResource(id = R.dimen.padding_large)) // Padding đồng nhất với LazyRow
-                      .padding(top = dimensionResource(id = R.dimen.padding_small))
-                      .fillMaxWidth()
-                      .clickable { navigateToListSubject(subject) },
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = stringResource(R.string.Subject)
-                                + ": "
-                                + stringResource(stringSubjectToResourceId(subject)
-                        ),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            color = MaterialTheme.colorScheme.primary
-                        ),
-                        modifier = Modifier
-                    )
+            Image(
+                painter = painterResource(R.drawable.no_book),
+                contentDescription = "",
+                modifier = Modifier
+                    .height(120.dp)
+                    .width(120.dp)
+            )
+            Text(
+                text = stringResource(R.string.no_item_description),
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
+            )
+        }
+    }else{
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize(),
+            contentPadding = contentPadding,
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)) //Khoang cach tung item
+        ) {
+            booksBySubject.forEach { (subjectId, books) ->
+                item {
+                    val subject =subjectList.find { subjectId == it.SUBJECT_Id } ?: SUBJECT(SUBJECT_Name = "Unknown")
+                    Row (
+                        modifier =
+                        Modifier
+                            .padding(horizontal = dimensionResource(id = R.dimen.padding_large)) // Padding đồng nhất với LazyRow
+                            .padding(top = dimensionResource(id = R.dimen.padding_small))
+                            .fillMaxWidth()
+                            .clickable { navigateToListSubject(subject.SUBJECT_Id.toString()) },
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = stringResource(R.string.Subject)
+                                    + ": "
+                                    + stringResource(stringSubjectToResourceId(subject.SUBJECT_Name)
+                            ),
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                color = MaterialTheme.colorScheme.primary
+                            ),
+                            modifier = Modifier
+                        )
 
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = stringResource(id = R.string.More),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = stringResource(id = R.string.More),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+
+                    }
 
                 }
-
-            }
-            item {
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                    ,contentPadding = PaddingValues(horizontal = dimensionResource(id = R.dimen.padding_small))
-                ) {
-                    items(items = books, key = { it.bookId }) { book ->
-                        val author = authorList.find { it.id == book.authorId } ?: Author(name = "Unknown")
-
-                        BookCard(
-                            book = book,
-                            author = author,
-                            modifier = Modifier
-                                .width(200.dp) // Thiết lập chiều rộng cụ thể
-                                .height(150.dp) // Thiết lập chiều cao cụ thể
-                                .padding(dimensionResource(id = R.dimen.padding_small)) //Moi card cach nhau
-                                .clickable { onItemClick(book.bookId) }
-                        )
+                item {
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                        ,contentPadding = PaddingValues(horizontal = dimensionResource(id = R.dimen.padding_small))
+                    ) {
+                        items(items = books, key = { it.BOOK_Id }) { book ->
+                            val author = authorList.find { it.AUTHOR_Id == book.AUTHOR_Id } ?: AUTHOR(AUTHOR_Name = "Unknown")
+                            BookCard(
+                                book = book,
+                                author = author,
+                                modifier = Modifier
+                                    .width(200.dp) // Thiết lập chiều rộng cụ thể
+                                    .height(150.dp) // Thiết lập chiều cao cụ thể
+                                    .padding(dimensionResource(id = R.dimen.padding_small)) //Moi card cach nhau
+                                    .clickable { onItemClick(book.BOOK_Id) }
+                            )
+                        }
                     }
                 }
             }
         }
     }
+
 }
-
-
-
-
-
 
 
 
 
 @Composable
 fun HomeBookBodyLazyColumn(
-    bookList: List<Book>,
-    authorList: List<Author>,
+    bookList: List<BOOK>,
+    authorList: List<AUTHOR>,
     onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
@@ -224,13 +251,27 @@ fun HomeBookBodyLazyColumn(
                 end = dimensionResource(id = R.dimen.padding_small),
             ),
     ) {
-        if (bookList.isEmpty() && authorList.isEmpty()) {
-            Text(
-                text = stringResource(R.string.no_item_description),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier,
-            )
+        if (bookList.isEmpty()) {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.no_book),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .height(120.dp)
+                        .width(120.dp)
+                )
+                Text(
+                    text = stringResource(R.string.no_item_description),
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
         } else {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -238,9 +279,9 @@ fun HomeBookBodyLazyColumn(
                     .fillMaxSize(),
                 contentPadding = contentPadding,
             ) {
-                items(items =  bookList, key = { it.bookId }) { book ->
+                items(items =  bookList, key = { it.BOOK_Id }) { book ->
 
-                    val author = authorList.find { it.id == book.authorId } ?: Author(name = "Unknown")
+                    val author = authorList.find { it.AUTHOR_Id == book.AUTHOR_Id } ?: AUTHOR(AUTHOR_Name = "Unknown")
 
                     //Chi thuc hien neu author khong phai la null, neu la null thi bo qua chay den bien khac
                         BookCard(
@@ -251,7 +292,7 @@ fun HomeBookBodyLazyColumn(
                                 .width(200.dp) // Thiết lập chiều rộng cụ thể
                                 .height(150.dp) // Thiết lập chiều cao cụ thể
                                 .padding(dimensionResource(id = R.dimen.padding_small))
-                                .clickable { onItemClick(book.bookId) }
+                                .clickable { onItemClick(book.BOOK_Id) }
                         )
 
                 }
@@ -262,20 +303,16 @@ fun HomeBookBodyLazyColumn(
 
 /*
     Nhóm sách theo chủ đề
-
  */
-fun groupBooksBySubject(books: List<Book>): Map<String, List<Book>> {
-    return books.groupBy { it.subject }
+fun groupBooksBySubject(books: List<BOOK>): Map<Int?, List<BOOK>> {
+    return books.groupBy { it.SUBJECT_Id }
 }
-
-
-
 
 
 @Composable
 fun BookCard(
-    book: Book,
-    author: Author,
+    book: BOOK,
+    author: AUTHOR,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -291,7 +328,7 @@ fun BookCard(
 
 
             Text(
-                text = book.name,
+                text = book.BOOK_Name,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -308,13 +345,13 @@ fun BookCard(
             // Phần tác giả và số kệ ở dưới cùng
             Column {
                 Text(
-                    text = author.name,
+                    text = author.AUTHOR_Name,
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = book.shelfNumber,
+                    text = book.BOOK_ShelfNumber,
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -324,51 +361,3 @@ fun BookCard(
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-@Preview(showBackground = true)
-@Composable
-fun HomeBodyPreview() {
-    InventoryTheme {
-        HomeBody(listOf(
-            Item(1, "Game", 100.0, 20), Item(2, "Pen", 200.0, 30), Item(3, "TV", 300.0, 50)
-        ), onItemClick = {})
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeBodyEmptyListPreview() {
-    InventoryTheme {
-        HomeBody(listOf(), onItemClick = {})
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun InventoryItemPreview() {
-    InventoryTheme {
-        InventoryItem(
-            Item(1, "Game", 100.0, 20),
-        )
-    }
-}
-*/

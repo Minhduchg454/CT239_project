@@ -20,8 +20,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.inventory.data.AuthorsRepository
+import com.example.inventory.data.BookTypesRepository
 import com.example.inventory.data.BooksRepository
+import com.example.inventory.data.SubjectsRepository
 import com.example.inventory.ui.home.AuthorsUiState
+import com.example.inventory.ui.home.BookTypesUiState
+import com.example.inventory.ui.home.HomeViewModel
+import com.example.inventory.ui.home.HomeViewModel.Companion
+import com.example.inventory.ui.home.SubjectsUiState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -30,8 +36,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 class BookDetailsViewModel(
     savedStateHandle: SavedStateHandle, //Luu tru du lieu qua cac lan thay doi cau hinh va tai tao lai viewmodel
-    private val booksRepository: BooksRepository,
-    private val authorsRepository: AuthorsRepository
+    val booksRepository: BooksRepository,
+    val authorsRepository: AuthorsRepository,
+    val subjectsRepository: SubjectsRepository,
+    val bookTypeRepository: BookTypesRepository
 ) : ViewModel() {
 
     /*
@@ -95,6 +103,23 @@ class BookDetailsViewModel(
                 initialValue = BookDetailsUiState()
             )
 
+    val SubjectsUiState : StateFlow<SubjectsUiState> = subjectsRepository.getAllSubjectsStream()
+        .map { SubjectsUiState(it) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+            initialValue = SubjectsUiState()
+        )
+
+    val BookTypesUiState : StateFlow<BookTypesUiState> = bookTypeRepository.getAllBookTypesStream()
+        .map { BookTypesUiState(it) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+            initialValue = BookTypesUiState()
+
+        )
+
     //Lấy trạng thái lưu trữ của sách dựa trên bookId được cập nhật liên tục
     val isBooKSave: StateFlow<Boolean> = //Boolean
         booksRepository.getBookSavedState(bookId)
@@ -116,7 +141,7 @@ class BookDetailsViewModel(
         viewModelScope.launch {
             val currentBook = bookDetailsUiState.value.bookDetails.toBook()
             booksRepository.updateSaveToLibrary(
-                currentBook.bookId,
+                currentBook.BOOK_Id,
                 true
             )
 
@@ -128,7 +153,7 @@ class BookDetailsViewModel(
         viewModelScope.launch {
             val currentBook = bookDetailsUiState.value.bookDetails.toBook()
             booksRepository.updateSaveToLibrary(
-                currentBook.bookId,
+                currentBook.BOOK_Id,
                 false
             )
 
