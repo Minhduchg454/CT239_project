@@ -1,6 +1,9 @@
 package com.example.inventory.ui.book
 
+import android.content.Context
+import android.content.Intent
 import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,6 +40,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -171,6 +175,33 @@ private fun BookDetailsBody(
 
     // Lấy màn hình hiện tại
     val currentRoute = navController.currentDestination?.route
+    val context = LocalContext.current
+
+
+    val authorName = authorList.find { it.AUTHOR_Id == bookDetailsUiState.bookDetails.toBook().AUTHOR_Id }?.AUTHOR_Name ?: "Unknown Author"
+    val subjectRes = subjectList.find { it.SUBJECT_Id == bookDetailsUiState.bookDetails.toBook().SUBJECT_Id }?.SUBJECT_Name ?: "Unknown Subject"
+    val typeNameRes = bookTypeList.find { it.BT_Id == bookDetailsUiState.bookDetails.toBook().BT_Id } ?.BT_Name ?: "Unknown Type"
+
+    val subjectName = stringResource(stringSubjectToResourceId(subjectRes))
+    val typeName = stringResource(stringTypeToResourceId(typeNameRes))
+    val bookName = stringResource(R.string.Book_name)
+    val bookType = stringResource(R.string.Book_type)
+    val author = stringResource(R.string.Author_name)
+    val publicationInfo = stringResource(R.string.Publication_info)
+    val shelfNumber = stringResource(R.string.Shelf_number)
+    val physicalDescription = stringResource(R.string.Physical_description)
+    val subject = stringResource(R.string.Subject)
+
+    val shareContent = """
+        $bookName: ${bookDetailsUiState.bookDetails.toBook().BOOK_Name}
+        ${bookType}: ${typeName}
+        ${author}: ${authorName} 
+        ${publicationInfo}: ${bookDetailsUiState.bookDetails.toBook().Book_PublicationInfo}
+        ${shelfNumber}: ${bookDetailsUiState.bookDetails.toBook().BOOK_ShelfNumber}
+        ${physicalDescription}: ${bookDetailsUiState.bookDetails.toBook().BOOK_PhysicalDescription}
+        ${subject}: ${subjectName}
+        MFN: ${bookDetailsUiState.bookDetails.toBook().Book_MFN}
+    """.trimIndent()
 
     Column(
         modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
@@ -251,6 +282,23 @@ private fun BookDetailsBody(
                 onDeleteCancel = { deleteConfirmationRequired = false },
                 modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
             )
+        }
+
+
+        if (previousRoute == HomeDestination.route ||
+            previousRoute == LibraryDestination.route ||
+            previousRoute == ListSubjectScreen.routeWithArgs ||
+            previousRoute == SearchScreenDestination.route){
+            OutlinedButton(
+                onClick = {
+                    shareBookDetails(context,shareContent)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.small,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary) // Tùy chỉnh viền
+            ) {
+                Text(stringResource(R.string.share), color = MaterialTheme.colorScheme.primary) // Tùy chỉnh màu chữ
+            }
         }
 
     }
@@ -414,6 +462,22 @@ fun DeleteConfirmationDialog(
 }
 
 
+
+fun shareBookDetails(
+    context: Context,
+    content: String,
+) {
+
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, content)
+    }
+
+    // Khởi chạy Intent
+    context.startActivity(
+        Intent.createChooser(intent, context.getString(R.string.share_with))
+    )
+}
 
 
 

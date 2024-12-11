@@ -132,4 +132,7 @@
     <string name="show_password">Hiện mật khẩu</string>
     <string name="try_other_keywords">Hãy thử những từ khóa khác</string>
     <string name="Found_books">Số sách tìm thấy: </string>
+
+    <string name="share">Chia sẻ</string>
+    <string name="share_with">Chia sẻ qua...</string>
 </resources>
